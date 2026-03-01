@@ -1,0 +1,16 @@
+[
+  { "type": "income", "category": "Royal Treasury", "amount": 8500000, "description": "King's taxes from the Shire" },
+  { "type": "income", "category": "Trade Revenues", "amount": 5200000, "description": "Mines of Moria tolls and goods" },
+  { "type": "income", "category": "Customs of Pelargir", "amount": 3100000, "description": "Port duties at the coastal cities" },
+  { "type": "income", "category": "Woodland Realm", "amount": 1800000, "description": "Timber and pelt exports" },
+  { "type": "income", "category": "Rohan Tribute", "amount": 950000, "description": "Horse breeding program fees" },
+  { "type": "income", "category": "Dwarven Tribute", "amount": 2400000, "description": "Mithril and gem taxes" },
+  { "type": "income", "category": "Lothlorien Tariff", "amount": 600000, "description": "Spice and perfume duties" },
+  { "type": "spending", "category": "Military Defense", "amount": 6200000, "description": "Border Patrols and Watch" },
+  { "type": "spending", "category": "Infrastructure", "amount": 3800000, "description": "Roads and bridges maintenance" },
+  { "type": "spending", "category": "Healthcare", "amount": 2900000, "description": "Healers and hospitals" },
+  { "type": "spending", "category": "Education", "amount": 1800000, "description": "Libraries of Minas Tirith" },
+  { "type": "spending", "category": "Foreign Aid", "amount": 1500000, "description": "Assistance to Dale and Esgaroth" },
+  { "type": "spending", "category": "Administration", "amount": 2100000, "description": "Bureaucracy and courts" },
+  { "type": "spending", "category": "Emergency Reserve", "amount": 1200000, "description": "Natural disaster fund" }
+]
