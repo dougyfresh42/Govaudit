@@ -1,4 +1,4 @@
-# Government Audit - Middle-earth Budget Visualization
+# Government Audit - Budget Visualization
 
 A data visualization website for exploring government budget data using Next.js, React, and ECharts.
 
@@ -17,22 +17,44 @@ npm run build
 
 The site will be available at `http://localhost:3000` (dev) or in the `out/` folder (production).
 
-## Tech Stack
+## Syncing Budget Data
 
-- **Next.js 14** - React framework with static export
-- **React 18** - UI library
-- **ECharts** - Visualization library (via echarts-for-react)
-- **Tailwind CSS** - Styling
+Run the importer to fetch the latest federal budget data from the U.S. Treasury:
 
-## Data
+```bash
+# Install tsx for running TypeScript scripts (if not already installed)
+npm install -D tsx
 
-Data is stored in `data/budget.json`. Edit the JSON and refresh to update visualizations.
+# Sync federal budget data
+npm run sync-budget
+```
 
-## Future Enhancements
+The importer fetches data from the [U.S. Treasury Fiscal Data API](https://fiscaldata.treasury.gov/) and writes to `data/budget.ts`.
 
-- **Zustand** - For live filtering capabilities
-- **DuckDB** - For handling larger datasets
+### Options
 
-## Adding New Visualizations
+```bash
+# Output as CSV instead
+npm run sync-budget -- -f csv
 
-See [AGENTS.md](./AGENTS.md) for detailed documentation on how to add charts and data.
+# Output as JSON
+npm run sync-budget -- -f json
+
+# Custom output file
+npm run sync-budget -- -o data/custom.ts
+```
+
+### Adding New Importers
+
+Importers live in `lib/importers/`. Each importer implements:
+
+```typescript
+interface Importer {
+  name: string;
+  description: string;
+  fetch(): Promise<RawData>;
+  transform(data: RawData): BudgetItem[];
+}
+```
+
+Add new importers to the registry in `lib/importers/index.ts` to make them available via CLI.

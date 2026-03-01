@@ -1,5 +1,6 @@
-import budgetData from "@/data/budget.json";
+import budgetCsv from "@/data/budget";
 import BudgetChart from "@/components/BudgetChart";
+import { CsvParser } from "@/lib/parsers/csv";
 
 type BudgetItem = {
   type: "income" | "spending";
@@ -8,7 +9,8 @@ type BudgetItem = {
   description: string;
 };
 
-const budget = budgetData as BudgetItem[];
+const parser = new CsvParser();
+const budget = parser.read(budgetCsv) as BudgetItem[];
 
 const totalIncome = budget
   .filter((d) => d.type === "income")
@@ -40,9 +42,9 @@ export default function Home() {
         <h2 className="text-xl font-semibold text-gray-700 mb-4">
           Data Overview
         </h2>
-        <p className="text-gray-600 mb-6">
-          This dashboard visualizes the income and spending of the Kingdom.
-        </p>
+          <p className="text-gray-600 mb-6">
+            This dashboard visualizes the income and spending of the U.S. Federal Government.
+          </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white rounded-lg shadow p-6">
             <p className="text-sm text-gray-500">Total Income</p>
