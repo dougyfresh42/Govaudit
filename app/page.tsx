@@ -22,10 +22,10 @@ export default function Home() {
   return (
     <div className="space-y-8">
       <section>
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
           Treasury Income and Spending by Category
         </h2>
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-background-tertiary rounded-lg shadow p-4">
           <ChartErrorBoundary>
             <BudgetChart data={budget} />
           </ChartErrorBoundary>
@@ -33,27 +33,27 @@ export default function Home() {
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+        <h2 className="text-xl font-semibold text-text-primary mb-4">
           Data Overview
         </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-text-secondary mb-6">
             This dashboard visualizes the income and spending of the U.S. Federal Government.
           </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg shadow p-6">
-            <p className="text-sm text-gray-500">Total Income</p>
+          <div className="bg-background-tertiary rounded-lg shadow p-6">
+            <p className="text-sm text-text-muted">Total Income</p>
             <p className="text-2xl font-bold text-green-600">
               {formatAmount(totalIncome)}
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <p className="text-sm text-gray-500">Total Spending</p>
+          <div className="bg-background-tertiary rounded-lg shadow p-6">
+            <p className="text-sm text-text-muted">Total Spending</p>
             <p className="text-2xl font-bold text-red-600">
               {formatAmount(totalSpending)}
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <p className="text-sm text-gray-500">Surplus</p>
+          <div className="bg-background-tertiary rounded-lg shadow p-6">
+            <p className="text-sm text-text-muted">Surplus</p>
             <p
               className={`text-2xl font-bold ${
                 surplus >= 0 ? "text-green-600" : "text-red-600"

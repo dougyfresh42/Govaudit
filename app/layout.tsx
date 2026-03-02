@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,17 +21,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen bg-gray-50`}>
-        <header className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 py-4">
-            <h1 className="text-2xl font-bold text-gray-900">
-              Government Audit - Kingdom of Middle-earth
-            </h1>
+      <body className={inter.className}>
+        <ThemeProvider>
+          <div className="min-h-screen bg-background-secondary">
+            <header className="bg-background-tertiary shadow-sm">
+              <div className="max-w-7xl mx-auto px-4 py-4">
+                <h1 className="text-2xl font-bold text-text-primary">
+                  Government Audit
+                </h1>
+              </div>
+            </header>
+            <main className="max-w-7xl mx-auto px-4 py-8">
+              {children}
+            </main>
           </div>
-        </header>
-        <main className="max-w-7xl mx-auto px-4 py-8">
-          {children}
-        </main>
+        </ThemeProvider>
       </body>
     </html>
   );

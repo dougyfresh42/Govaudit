@@ -3,12 +3,15 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
 import type { BudgetItem } from "@/lib/parsers";
+import { themeColors } from "@/lib/theme";
+import { useTheme } from "@/app/context/ThemeContext";
 
 type Props = {
   data: BudgetItem[];
 };
 
 export default function BudgetChart({ data }: Props) {
+  const { theme } = useTheme();
   const sortedByAmount = [...data].sort((a, b) => b.amount - a.amount);
 
   const categories = sortedByAmount.map((d) => d.category);
@@ -71,7 +74,7 @@ export default function BudgetChart({ data }: Props) {
         type: "bar",
         data: incomeData,
         itemStyle: {
-          color: "#2e7d32",
+          color: themeColors.income[theme],
         },
       },
       {
@@ -79,7 +82,7 @@ export default function BudgetChart({ data }: Props) {
         type: "bar",
         data: spendingData,
         itemStyle: {
-          color: "#c62828",
+          color: themeColors.spending[theme],
         },
       },
     ],
