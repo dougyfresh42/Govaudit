@@ -7,6 +7,6 @@ export interface BudgetItem {
 
 export interface BudgetParser {
   name: string;
-  read(content: string): BudgetItem[];
-  write(data: BudgetItem[]): string;
+  read(_content: string): BudgetItem[];
+  write(_data: BudgetItem[]): string;
 }

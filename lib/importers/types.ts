@@ -4,7 +4,11 @@ export interface Importer {
   name: string;
   description: string;
   fetch(): Promise<unknown>;
-  transform(data: unknown): BudgetItem[];
+  transform(_data: unknown): BudgetItem[];
+}
+
+export interface ImporterConfig {
+  date?: string;
 }
 
 export interface ImporterRegistry {

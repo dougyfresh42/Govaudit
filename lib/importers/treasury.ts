@@ -1,5 +1,5 @@
 import { BudgetItem } from "../parsers";
-import { Importer } from "./types";
+import { Importer, ImporterConfig } from "./types";
 
 interface TreasuryMtsRow {
   record_date: string;
@@ -13,15 +13,47 @@ export class TreasuryImporter implements Importer {
   description = "U.S. Federal Budget - Latest available month by category";
 
   private baseUrl = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1";
+  private date: string;
+  private cachedDate: string | null = null;
+
+  constructor(config?: ImporterConfig) {
+    this.date = config?.date || "latest";
+  }
 
   async fetch(): Promise<{ revenue: TreasuryMtsRow[]; spending: TreasuryMtsRow[] }> {
-    const revenue = await this.fetchRevenue();
-    const spending = await this.fetchSpending();
+    const filterDate = await this.getTargetDate();
+    const revenue = await this.fetchRevenue(filterDate);
+    const spending = await this.fetchSpending(filterDate);
     return { revenue, spending };
   }
 
-  private async fetchRevenue(): Promise<TreasuryMtsRow[]> {
-    const url = `${this.baseUrl}/accounting/mts/mts_table_9?filter=record_date:eq:2024-09-30&page[size]=5000`;
+  private async getTargetDate(): Promise<string> {
+    if (this.date === "latest") {
+      if (this.cachedDate) {
+        return this.cachedDate;
+      }
+      const latestDate = await this.fetchLatestDate();
+      this.cachedDate = latestDate;
+      return latestDate;
+    }
+    return this.date;
+  }
+
+  private async fetchLatestDate(): Promise<string> {
+    const url = `${this.baseUrl}/accounting/mts/mts_table_9?page[size]=1&sort=-record_date`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
+    const json = await response.json();
+    if (!json.data || json.data.length === 0) {
+      throw new Error("No data available from Treasury API");
+    }
+    return json.data[0].record_date;
+  }
+
+  private async fetchRevenue(date: string): Promise<TreasuryMtsRow[]> {
+    const url = `${this.baseUrl}/accounting/mts/mts_table_9?filter=record_date:eq:${date}&page[size]=5000`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`API error: ${response.status} ${response.statusText}`);
@@ -30,8 +62,8 @@ export class TreasuryImporter implements Importer {
     return json.data as TreasuryMtsRow[];
   }
 
-  private async fetchSpending(): Promise<TreasuryMtsRow[]> {
-    const url = `${this.baseUrl}/accounting/mts/mts_table_3?filter=record_date:eq:2024-09-30&page[size]=5000`;
+  private async fetchSpending(date: string): Promise<TreasuryMtsRow[]> {
+    const url = `${this.baseUrl}/accounting/mts/mts_table_3?filter=record_date:eq:${date}&page[size]=5000`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`API error: ${response.status} ${response.statusText}`);

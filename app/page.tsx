@@ -1,13 +1,9 @@
 import budgetCsv from "@/data/budget";
 import BudgetChart from "@/components/BudgetChart";
+import { ChartErrorBoundary } from "@/components/ChartErrorBoundary";
 import { CsvParser } from "@/lib/parsers/csv";
-
-type BudgetItem = {
-  type: "income" | "spending";
-  category: string;
-  amount: number;
-  description: string;
-};
+import type { BudgetItem } from "@/lib/parsers";
+import { formatAmount } from "@/lib/utils";
 
 const parser = new CsvParser();
 const budget = parser.read(budgetCsv) as BudgetItem[];
@@ -22,10 +18,6 @@ const totalSpending = budget
 
 const surplus = totalIncome - totalSpending;
 
-function formatAmount(amount: number): string {
-  return `$${(amount / 1000000).toFixed(1)}M`;
-}
-
 export default function Home() {
   return (
     <div className="space-y-8">
@@ -34,7 +26,9 @@ export default function Home() {
           Treasury Income and Spending by Category
         </h2>
         <div className="bg-white rounded-lg shadow p-4">
-          <BudgetChart data={budget} />
+          <ChartErrorBoundary>
+            <BudgetChart data={budget} />
+          </ChartErrorBoundary>
         </div>
       </section>
 

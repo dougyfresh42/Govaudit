@@ -1,10 +1,9 @@
-import { Importer, ImporterRegistry } from "./types";
+import { Importer, ImporterRegistry, ImporterConfig } from "./types";
 import { TreasuryImporter } from "./treasury";
 
-export function getImporter(name: string): Importer {
-  const registry: ImporterRegistry = {
-    treasury: new TreasuryImporter(),
-  };
+export function getImporter(name: string, config?: ImporterConfig): Importer {
+  const registry: ImporterRegistry = {};
+  registry.treasury = new TreasuryImporter(config);
 
   const importer = registry[name];
   if (!importer) {
@@ -16,3 +15,5 @@ export function getImporter(name: string): Importer {
 export function listImporters(): Importer[] {
   return [new TreasuryImporter()];
 }
+
+export type { ImporterConfig } from "./types";

@@ -58,3 +58,14 @@ interface Importer {
 ```
 
 Add new importers to the registry in `lib/importers/index.ts` to make them available via CLI.
+
+## Open Questions
+
+### Data Format
+
+Currently data is stored as a CSV string in a TypeScript module (`data/budget.ts`). This works but has tradeoffs:
+- AI assistants expect JSON and write incorrect import code
+- Harder to add nested structures
+- Non-standard for TS projects
+
+Consider switching to `data/budget.json` for easier development. See [REVIEW.md](./REVIEW.md) item 6 for details.

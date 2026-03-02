@@ -1,6 +1,9 @@
 # AGENTS.md - Guidance for AI Assistants
 
-This project uses Next.js 14 with React and ECharts to build a data visualization website.
+This project uses Next.js 15 with React and ECharts to build a data visualization website.
+**Maintainers: Keep this file accurate. Update it whenever the stack, data format, or architecture changes.**
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development workflow requirements.
 AGENTS.md specifies generically some development strategies relevant to LLMs in this repository.
 
 ### AGENTS.md will:
@@ -22,4 +25,4 @@ AGENTS.md specifies generically some development strategies relevant to LLMs in 
 
 ## Data Location
 
-Data files are stored in `data/*.json`. Add new datasets there and import them in components.
+Data files are stored in `data/budget.ts` (a TypeScript module exporting a CSV string). Add new datasets there and import them in components.

@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Government Audit - Middle-earth Budget",
   description: "Transparency and reporting on government spending data",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -13,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-50">
+      <body className={`${inter.className} min-h-screen bg-gray-50`}>
         <header className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <h1 className="text-2xl font-bold text-gray-900">

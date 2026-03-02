@@ -10,6 +10,7 @@ interface Args {
   importer?: string;
   output?: string;
   format?: string;
+  date?: string;
   help?: boolean;
 }
 
@@ -32,6 +33,10 @@ function parseArgs(): Args {
       case "--format":
         args.format = argv[++i];
         break;
+      case "-d":
+      case "--date":
+        args.date = argv[++i];
+        break;
       case "-h":
       case "--help":
         args.help = true;
@@ -51,10 +56,12 @@ Options:
   -i, --importer <name>   Importer to use (default: treasury)
   -o, --output <file>    Output file (default: data/budget.csv)
   -f, --format <format>  Output format: csv (default), json
+  -d, --date <date>      Record date: YYYY-MM-DD or 'latest' (default: latest)
   -h, --help             Show this help message
 
 Examples:
-  npx tsx scripts/sync-budget.ts                           # Sync federal budget
+  npx tsx scripts/sync-budget.ts                           # Sync federal budget (latest)
+  npx tsx scripts/sync-budget.ts -d 2024-12-31             # Sync specific date
   npx tsx scripts/sync-budget.ts -o data/state.csv         # Custom output file
   npx tsx scripts/sync-budget.ts -f json                    # Output as JSON
 
@@ -74,12 +81,14 @@ async function main() {
   const importerName = args.importer || "treasury";
   const outputFile = args.output || DEFAULT_OUTPUT;
   const format = args.format || "ts";
+  const date = args.date || "latest";
 
   console.log(`Running importer: ${importerName}`);
   console.log(`Output: ${outputFile}`);
   console.log(`Format: ${format}`);
+  console.log(`Date: ${date}`);
 
-  const importer = getImporter(importerName);
+  const importer = getImporter(importerName, { date });
   console.log(`Description: ${importer.description}`);
 
   console.log("Fetching data...");

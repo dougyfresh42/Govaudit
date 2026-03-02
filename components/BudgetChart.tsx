@@ -2,13 +2,7 @@
 
 import React from "react";
 import ReactECharts from "echarts-for-react";
-
-type BudgetItem = {
-  type: "income" | "spending";
-  category: string;
-  amount: number;
-  description: string;
-};
+import type { BudgetItem } from "@/lib/parsers";
 
 type Props = {
   data: BudgetItem[];
@@ -18,12 +12,6 @@ export default function BudgetChart({ data }: Props) {
   const sortedByAmount = [...data].sort((a, b) => b.amount - a.amount);
 
   const categories = sortedByAmount.map((d) => d.category);
-  const incomeValues = sortedByAmount
-    .filter((d) => d.type === "income")
-    .map((d) => d.amount / 1000000);
-  const spendingValues = sortedByAmount
-    .filter((d) => d.type === "spending")
-    .map((d) => d.amount / 1000000);
 
   const incomeData = categories.map((cat) => {
     const item = data.find((d) => d.category === cat && d.type === "income");
