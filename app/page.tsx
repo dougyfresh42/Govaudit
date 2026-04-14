@@ -10,9 +10,10 @@ const parser = new CsvParser();
 const budget = parser.read(budgetCsv) as BudgetItem[];
 
 const totalIncome = budget
-  .filter((d) => d.type === "income")
+  .filter((d) => d.type === "income" && d.amount > 0)
   .reduce((sum, d) => sum + d.amount, 0);
 
+// Some spending entries are negative (e.g. agencies that returned funds); exclude them from totals.
 const totalSpending = budget
   .filter((d) => d.type === "spending" && d.amount > 0)
   .reduce((sum, d) => sum + d.amount, 0);

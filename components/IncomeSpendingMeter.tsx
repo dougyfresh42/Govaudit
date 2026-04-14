@@ -23,7 +23,14 @@ export default function IncomeSpendingMeter({ totalIncome, totalSpending }: Prop
       </h2>
 
       {/* Meter bar */}
-      <div className="relative w-full h-8 sm:h-10 rounded-full overflow-hidden flex" role="meter" aria-label="Income vs Spending ratio">
+      <div
+        className="relative w-full h-8 sm:h-10 rounded-full overflow-hidden flex"
+        role="progressbar"
+        aria-label="Income vs Spending ratio"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(incomePercent)}
+      >
         <div
           className="bg-green-500 flex items-center justify-center transition-all duration-500"
           style={{ width: `${incomePercent}%` }}
