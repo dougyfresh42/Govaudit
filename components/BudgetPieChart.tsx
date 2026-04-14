@@ -47,16 +47,16 @@ export default function BudgetPieChart({ data, type, title }: Props) {
         `${params.name}<br/>$${params.value.toLocaleString()}M (${params.percent}%)`,
     },
     legend: {
-      orient: "vertical" as const,
-      right: "2%",
-      top: "middle",
-      itemGap: 6,
+      orient: "horizontal" as const,
+      bottom: 0,
+      left: "center",
+      itemGap: 8,
       textStyle: {
         color: subTextColor,
         fontSize: 11,
       },
       formatter: (name: string) => {
-        const maxLen = 20;
+        const maxLen = 18;
         return name.length > maxLen ? name.slice(0, maxLen) + "…" : name;
       },
     },
@@ -65,7 +65,7 @@ export default function BudgetPieChart({ data, type, title }: Props) {
         name: title,
         type: "pie",
         radius: ["35%", "65%"],
-        center: ["35%", "50%"],
+        center: ["50%", "42%"],
         avoidLabelOverlap: true,
         label: {
           show: false,
@@ -97,7 +97,7 @@ export default function BudgetPieChart({ data, type, title }: Props) {
       </h3>
       <ReactECharts
         option={option}
-        style={{ height: "300px", width: "100%" }}
+        style={{ height: "380px", width: "100%" }}
       />
     </div>
   );
