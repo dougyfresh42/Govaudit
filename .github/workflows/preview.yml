@@ -32,6 +32,15 @@ jobs:
           name: site-build
           path: out/
 
+      - name: Ensure .nojekyll exists on gh-pages root
+        run: mkdir nojekyll && touch nojekyll/.nojekyll
+
+      - name: Deploy .nojekyll to gh-pages root
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: nojekyll
+          clean: false
+
       - name: Deploy PR preview
         uses: rossjrw/pr-preview-action@v1
         with:
