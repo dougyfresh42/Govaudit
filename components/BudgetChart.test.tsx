@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import BudgetChart from "./BudgetChart";
+import { ThemeProvider } from "@/app/context/ThemeContext";
+
+function renderWithTheme(ui: React.ReactElement) {
+  return render(<ThemeProvider>{ui}</ThemeProvider>);
+}
 
 describe("BudgetChart", () => {
   it("renders without crashing with valid data", () => {
@@ -20,13 +25,13 @@ describe("BudgetChart", () => {
     ];
 
     expect(() => {
-      render(<BudgetChart data={data} />);
+      renderWithTheme(<BudgetChart data={data} />);
     }).not.toThrow();
   });
 
   it("renders with empty data", () => {
     expect(() => {
-      render(<BudgetChart data={[]} />);
+      renderWithTheme(<BudgetChart data={[]} />);
     }).not.toThrow();
   });
 
@@ -41,7 +46,7 @@ describe("BudgetChart", () => {
     ];
 
     expect(() => {
-      render(<BudgetChart data={data} />);
+      renderWithTheme(<BudgetChart data={data} />);
     }).not.toThrow();
   });
 
@@ -56,7 +61,7 @@ describe("BudgetChart", () => {
     ];
 
     expect(() => {
-      render(<BudgetChart data={data} />);
+      renderWithTheme(<BudgetChart data={data} />);
     }).not.toThrow();
   });
 });
