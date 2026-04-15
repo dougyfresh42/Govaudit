@@ -2,6 +2,7 @@
   {
     "meta": {
       "snapshotKey": "2026-01",
+      "datasetId": "treasury",
       "sourceName": "U.S. Treasury Monthly Treasury Statement (MTS)",
       "sourceUrl": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
       "reportingPeriod": "January 2026",
@@ -10,5 +11,70 @@
       "transformationNotes": "Revenue sourced from MTS Table 9 (Summary of Receipts, Outlays, and the Deficit or Surplus of the United States Government). Spending sourced from MTS Table 3 (Outlays by Agency). Revenue filtered to standard tax receipt categories. Spending excludes summary/total rows, on-/off-budget subtotals, and rows that duplicate receipt categories."
     },
     "csv": "type,category,amount,description\nincome,Individual Income Taxes,250057480042,\"Federal revenue - Individual Income Taxes\"\nincome,Corporation Income Taxes,108555215802,\"Federal revenue - Corporation Income Taxes\"\nincome,Employment and General Retirement,141077831428,\"Federal revenue - Employment and General Retirement\"\nincome,Unemployment Insurance,864557112,\"Federal revenue - Unemployment Insurance\"\nincome,Excise Taxes,12295634807,\"Federal revenue - Excise Taxes\"\nincome,Estate and Gift Taxes,2204100802,\"Federal revenue - Estate and Gift Taxes\"\nincome,Customs Duties,7249259468,\"Federal revenue - Customs Duties\"\nincome,Miscellaneous Receipts,4606088775,\"Federal revenue - Miscellaneous Receipts\"\nincome,Other Retirement,709542741,\"Federal revenue - Other Retirement\"\nspending,Department of Homeland Security,9247661913,\"Federal spending - Department of Homeland Security\"\nspending,Other,-35471830456,\"Federal spending - Other\"\nspending,Department of Veterans Affairs,15766804953,\"Federal spending - Department of Veterans Affairs\"\nspending,Corps of Engineers,1109527081,\"Federal spending - Corps of Engineers\"\nspending,Other Defense Civil Programs,755013724,\"Federal spending - Other Defense Civil Programs\"\nspending,Environmental Protection Agency,1848368083,\"Federal spending - Environmental Protection Agency\"\nspending,Department of Defense--Military Programs,72311690298,\"Federal spending - Department of Defense--Military Programs\"\nspending,Department of Education,17813729682,\"Federal spending - Department of Education\"\nspending,Department of Energy,4096659557,\"Federal spending - Department of Energy\"\nspending,Department of Health and Human Services,102757768159,\"Federal spending - Department of Health and Human Services\"\nspending,Small Business Administration,204564388,\"Federal spending - Small Business Administration\"\nspending,Legislative Branch,681642115,\"Federal spending - Legislative Branch\"\nspending,Judicial Branch,878740260,\"Federal spending - Judicial Branch\"\nspending,Department of Agriculture,11303828672,\"Federal spending - Department of Agriculture\"\nspending,Department of Commerce,2018699469,\"Federal spending - Department of Commerce\"\nspending,Executive Office of the President,32692006,\"Federal spending - Executive Office of the President\"\nspending,General Services Administration,-349779707,\"Federal spending - General Services Administration\"\nspending,International Assistance Programs,5545086587,\"Federal spending - International Assistance Programs\"\nspending,National Aeronautics and Space Administration,2093385635,\"Federal spending - National Aeronautics and Space Administration\"\nspending,National Science Foundation,1015349190,\"Federal spending - National Science Foundation\"\nspending,Office of Personnel Management,10378247318,\"Federal spending - Office of Personnel Management\"\nspending,Department of Housing and Urban Development,4491428557,\"Federal spending - Department of Housing and Urban Development\"\nspending,Department of the Interior,2632298646,\"Federal spending - Department of the Interior\"\nspending,Department of Justice,4457217658,\"Federal spending - Department of Justice\"\nspending,Department of Labor,3834539517,\"Federal spending - Department of Labor\"\nspending,Department of State,5823939174,\"Federal spending - Department of State\"\nspending,Department of Transportation,16953542130,\"Federal spending - Department of Transportation\"\nspending,Interest on Treasury Debt Securities (Gross),84448301832,\"Federal spending - Interest on Treasury Debt Securities (Gross)\"\nspending,Social Security Administration,124465163868,\"Federal spending - Social Security Administration\"\nspending,Independent Agencies,-3105838434,\"Federal spending - Independent Agencies\""
+  },
+  {
+    "meta": {
+      "snapshotKey": "2026-03",
+      "datasetId": "ohio",
+      "sourceName": "Ohio Checkbook",
+      "sourceUrl": "https://ohiocheckbook.ohio.gov/",
+      "reportingPeriod": "March 2026",
+      "dataDate": "2026-03-31",
+      "importedAt": "2026-04-15T00:00:00.000Z",
+      "transformationNotes": "STUB: Ohio Checkbook data ingestion not yet implemented. Target: March 2026 monthly snapshot (2026-03-31). Planned transformation: normalize agency expenditures and revenue by fund category. TODO: replace placeholder CSV with real Ohio Checkbook data."
+    },
+    "csv": "type,category,amount,description\nincome,State Income Tax,750000000,\"Ohio state income tax revenue (placeholder)\"\nincome,Sales and Use Tax,600000000,\"Ohio sales and use tax (placeholder)\"\nincome,Federal Transfers,450000000,\"Ohio federal transfer receipts (placeholder)\"\nincome,Other Revenue,200000000,\"Ohio miscellaneous revenue (placeholder)\"\nspending,Education,700000000,\"Ohio Dept. of Education spending (placeholder)\"\nspending,Medicaid,800000000,\"Ohio Medicaid program spending (placeholder)\"\nspending,Public Safety,150000000,\"Ohio public safety spending (placeholder)\"\nspending,Transportation,200000000,\"Ohio Dept. of Transportation spending (placeholder)\"\nspending,General Government,100000000,\"Ohio general government operations (placeholder)\""
+  },
+  {
+    "meta": {
+      "snapshotKey": "2026-03",
+      "datasetId": "washington",
+      "sourceName": "Washington State Fiscal Transparency",
+      "sourceUrl": "https://fiscal.wa.gov/",
+      "reportingPeriod": "March 2026",
+      "dataDate": "2026-03-31",
+      "importedAt": "2026-04-15T00:00:00.000Z",
+      "transformationNotes": "STUB: Washington state fiscal data ingestion not yet implemented. Target: March 2026 monthly snapshot (2026-03-31). Planned transformation: normalize AFRS agency expenditures and DOR revenue by source. TODO: replace placeholder CSV with real Washington fiscal data."
+    },
+    "csv": "type,category,amount,description\nincome,Sales Tax,1000000000,\"Washington sales tax revenue (placeholder)\"\nincome,Business and Occupation Tax,600000000,\"Washington B&O tax (placeholder)\"\nincome,Property Tax,300000000,\"Washington property tax (placeholder)\"\nincome,Federal Transfers,500000000,\"Washington federal transfer receipts (placeholder)\"\nspending,Education,900000000,\"Washington K-12 and higher education spending (placeholder)\"\nspending,Health and Human Services,700000000,\"Washington DSHS spending (placeholder)\"\nspending,Transportation,400000000,\"Washington WSDOT spending (placeholder)\"\nspending,Corrections,200000000,\"Washington DOC spending (placeholder)\"\nspending,General Government,150000000,\"Washington general government operations (placeholder)\""
+  },
+  {
+    "meta": {
+      "snapshotKey": "2026-03",
+      "datasetId": "massachusetts",
+      "sourceName": "Massachusetts CTHRU",
+      "sourceUrl": "https://cthru.data.mass.gov/",
+      "reportingPeriod": "March 2026",
+      "dataDate": "2026-03-31",
+      "importedAt": "2026-04-15T00:00:00.000Z",
+      "transformationNotes": "STUB: Massachusetts CTHRU data ingestion not yet implemented. Target: March 2026 monthly snapshot (2026-03-31). Planned transformation: normalize CTHRU department expenditures and DOR revenue by category. TODO: replace placeholder CSV with real CTHRU data."
+    },
+    "csv": "type,category,amount,description\nincome,Income Tax,1500000000,\"Massachusetts income tax revenue (placeholder)\"\nincome,Sales Tax,600000000,\"Massachusetts sales and use tax (placeholder)\"\nincome,Corporate Excise,300000000,\"Massachusetts corporate excise tax (placeholder)\"\nincome,Federal Transfers,800000000,\"Massachusetts federal transfer receipts (placeholder)\"\nspending,Education,800000000,\"Massachusetts Dept. of Education spending (placeholder)\"\nspending,Health and Human Services,1500000000,\"Massachusetts HHS spending (placeholder)\"\nspending,Transportation,300000000,\"Massachusetts DOT spending (placeholder)\"\nspending,Public Safety,200000000,\"Massachusetts public safety spending (placeholder)\"\nspending,General Government,150000000,\"Massachusetts general government operations (placeholder)\""
+  },
+  {
+    "meta": {
+      "snapshotKey": "2026-03",
+      "datasetId": "connecticut",
+      "sourceName": "Open Budget CT",
+      "sourceUrl": "https://openbudget.ct.gov/",
+      "reportingPeriod": "March 2026",
+      "dataDate": "2026-03-31",
+      "importedAt": "2026-04-15T00:00:00.000Z",
+      "transformationNotes": "STUB: Connecticut Open Budget data ingestion not yet implemented. Target: March 2026 monthly snapshot (2026-03-31). Planned transformation: normalize agency allotments/expenditures and revenue by fund. TODO: replace placeholder CSV with real Open Budget CT data."
+    },
+    "csv": "type,category,amount,description\nincome,Income Tax,700000000,\"Connecticut income tax revenue (placeholder)\"\nincome,Sales Tax,400000000,\"Connecticut sales tax (placeholder)\"\nincome,Corporation Tax,150000000,\"Connecticut corporation tax (placeholder)\"\nincome,Federal Transfers,350000000,\"Connecticut federal transfer receipts (placeholder)\"\nspending,Education,450000000,\"Connecticut Dept. of Education spending (placeholder)\"\nspending,Health and Human Services,600000000,\"Connecticut HHS spending (placeholder)\"\nspending,Transportation,200000000,\"Connecticut DOT spending (placeholder)\"\nspending,Corrections,150000000,\"Connecticut DOC spending (placeholder)\"\nspending,General Government,100000000,\"Connecticut general government operations (placeholder)\""
+  },
+  {
+    "meta": {
+      "snapshotKey": "2026-03",
+      "datasetId": "florida",
+      "sourceName": "Transparency Florida",
+      "sourceUrl": "https://transparency.myflorida.com/",
+      "reportingPeriod": "March 2026",
+      "dataDate": "2026-03-31",
+      "importedAt": "2026-04-15T00:00:00.000Z",
+      "transformationNotes": "STUB: Transparency Florida / FLAIR data ingestion not yet implemented. Target: March 2026 monthly snapshot (2026-03-31). Note: Florida has no state income tax; revenue categories differ from income-tax states. Planned transformation: normalize FLAIR agency expenditures and DOR revenue by source. TODO: replace placeholder CSV with real Transparency Florida data."
+    },
+    "csv": "type,category,amount,description\nincome,Sales and Use Tax,1500000000,\"Florida sales and use tax revenue (placeholder)\"\nincome,Corporate Income Tax,200000000,\"Florida corporate income tax (placeholder)\"\nincome,Documentary Stamp Tax,250000000,\"Florida documentary stamp tax (placeholder)\"\nincome,Federal Transfers,800000000,\"Florida federal transfer receipts (placeholder)\"\nspending,Education,1000000000,\"Florida Dept. of Education spending (placeholder)\"\nspending,Health and Human Services,900000000,\"Florida AHCA and DCF spending (placeholder)\"\nspending,Transportation,400000000,\"Florida DOT spending (placeholder)\"\nspending,Law Enforcement,250000000,\"Florida law enforcement spending (placeholder)\"\nspending,General Government,200000000,\"Florida general government operations (placeholder)\""
   }
 ]
