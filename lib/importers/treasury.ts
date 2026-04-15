@@ -1,5 +1,14 @@
 import { BudgetItem } from "../parsers";
-import { Importer, ImporterConfig } from "./types";
+import { Importer, ImporterConfig, SnapshotMeta } from "./types";
+
+const TREASURY_SOURCE_NAME = "U.S. Treasury Monthly Treasury Statement (MTS)";
+const TREASURY_SOURCE_URL =
+  "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/";
+const TREASURY_TRANSFORMATION_NOTES =
+  "Revenue sourced from MTS Table 9 (Summary of Receipts, Outlays, and the Deficit or Surplus of the United States Government). " +
+  "Spending sourced from MTS Table 3 (Outlays by Agency). " +
+  "Revenue filtered to standard tax receipt categories. " +
+  "Spending excludes summary/total rows, on-/off-budget subtotals, and rows that duplicate receipt categories.";
 
 interface TreasuryMtsRow {
   record_date: string;
@@ -18,6 +27,36 @@ export class TreasuryImporter implements Importer {
 
   constructor(config?: ImporterConfig) {
     this.date = config?.date || "latest";
+  }
+
+  /** Returns the data date resolved by the most recent fetch, or null if fetch has not been called. */
+  getResolvedDate(): string | null {
+    if (this.date !== "latest") return this.date;
+    return this.cachedDate;
+  }
+
+  /**
+   * Returns provenance metadata for this importer.
+   * @param resolvedDate - The ISO date string of the source record (e.g. "2026-01-31").
+   * @param importedAt  - ISO datetime when the import was run.
+   */
+  getMetadata(resolvedDate: string, importedAt: string): SnapshotMeta {
+    const [year, month] = resolvedDate.split("-");
+    const snapshotKey = `${year}-${month}`;
+    const reportingPeriod = new Date(`${resolvedDate}T12:00:00Z`).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      timeZone: "UTC",
+    });
+    return {
+      snapshotKey,
+      sourceName: TREASURY_SOURCE_NAME,
+      sourceUrl: TREASURY_SOURCE_URL,
+      reportingPeriod,
+      dataDate: resolvedDate,
+      importedAt,
+      transformationNotes: TREASURY_TRANSFORMATION_NOTES,
+    };
   }
 
   async fetch(): Promise<{ revenue: TreasuryMtsRow[]; spending: TreasuryMtsRow[] }> {

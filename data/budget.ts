@@ -1,42 +1,7 @@
-const csv = `type,category,amount,description
-income,Individual Income Taxes,250057480042,"Federal revenue - Individual Income Taxes"
-income,Corporation Income Taxes,108555215802,"Federal revenue - Corporation Income Taxes"
-income,Employment and General Retirement,141077831428,"Federal revenue - Employment and General Retirement"
-income,Unemployment Insurance,864557112,"Federal revenue - Unemployment Insurance"
-income,Excise Taxes,12295634807,"Federal revenue - Excise Taxes"
-income,Estate and Gift Taxes,2204100802,"Federal revenue - Estate and Gift Taxes"
-income,Customs Duties,7249259468,"Federal revenue - Customs Duties"
-income,Miscellaneous Receipts,4606088775,"Federal revenue - Miscellaneous Receipts"
-income,Other Retirement,709542741,"Federal revenue - Other Retirement"
-spending,Department of Homeland Security,9247661913,"Federal spending - Department of Homeland Security"
-spending,Other,-35471830456,"Federal spending - Other"
-spending,Department of Veterans Affairs,15766804953,"Federal spending - Department of Veterans Affairs"
-spending,Corps of Engineers,1109527081,"Federal spending - Corps of Engineers"
-spending,Other Defense Civil Programs,755013724,"Federal spending - Other Defense Civil Programs"
-spending,Environmental Protection Agency,1848368083,"Federal spending - Environmental Protection Agency"
-spending,Department of Defense--Military Programs,72311690298,"Federal spending - Department of Defense--Military Programs"
-spending,Department of Education,17813729682,"Federal spending - Department of Education"
-spending,Department of Energy,4096659557,"Federal spending - Department of Energy"
-spending,Department of Health and Human Services,102757768159,"Federal spending - Department of Health and Human Services"
-spending,Small Business Administration,204564388,"Federal spending - Small Business Administration"
-spending,Legislative Branch,681642115,"Federal spending - Legislative Branch"
-spending,Judicial Branch,878740260,"Federal spending - Judicial Branch"
-spending,Department of Agriculture,11303828672,"Federal spending - Department of Agriculture"
-spending,Department of Commerce,2018699469,"Federal spending - Department of Commerce"
-spending,Executive Office of the President,32692006,"Federal spending - Executive Office of the President"
-spending,General Services Administration,-349779707,"Federal spending - General Services Administration"
-spending,International Assistance Programs,5545086587,"Federal spending - International Assistance Programs"
-spending,National Aeronautics and Space Administration,2093385635,"Federal spending - National Aeronautics and Space Administration"
-spending,National Science Foundation,1015349190,"Federal spending - National Science Foundation"
-spending,Office of Personnel Management,10378247318,"Federal spending - Office of Personnel Management"
-spending,Department of Housing and Urban Development,4491428557,"Federal spending - Department of Housing and Urban Development"
-spending,Department of the Interior,2632298646,"Federal spending - Department of the Interior"
-spending,Department of Justice,4457217658,"Federal spending - Department of Justice"
-spending,Department of Labor,3834539517,"Federal spending - Department of Labor"
-spending,Department of State,5823939174,"Federal spending - Department of State"
-spending,Department of Transportation,16953542130,"Federal spending - Department of Transportation"
-spending,Interest on Treasury Debt Securities (Gross),84448301832,"Federal spending - Interest on Treasury Debt Securities (Gross)"
-spending,Social Security Administration,124465163868,"Federal spending - Social Security Administration"
-spending,Independent Agencies,-3105838434,"Federal spending - Independent Agencies"`;
+import type { BudgetSnapshot } from "@/lib/importers/types";
+import snapshotsData from "./snapshots.json";
 
-export default csv;
+// Snapshots are stored newest-first; the first entry is always the current snapshot.
+const snapshots: BudgetSnapshot[] = snapshotsData as BudgetSnapshot[];
+
+export default snapshots;

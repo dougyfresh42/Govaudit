@@ -21,6 +21,67 @@ describe("TreasuryImporter", () => {
     });
   });
 
+  describe("getResolvedDate", () => {
+    it("returns the configured date when not 'latest'", () => {
+      const importer = new TreasuryImporter({ date: "2024-12-31" });
+      expect(importer.getResolvedDate()).toBe("2024-12-31");
+    });
+
+    it("returns null before fetch is called when date is 'latest'", () => {
+      const importer = new TreasuryImporter();
+      expect(importer.getResolvedDate()).toBeNull();
+    });
+
+    it("returns cached date after fetch resolves when date is 'latest'", async () => {
+      vi.stubGlobal("fetch", vi.fn());
+      const mockFetch = global.fetch as ReturnType<typeof vi.fn>;
+      mockFetch
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ data: [{ record_date: "2026-01-31" }] }) })
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ data: [] }) })
+        .mockResolvedValueOnce({ ok: true, json: async () => ({ data: [] }) });
+
+      const importer = new TreasuryImporter();
+      await importer.fetch();
+      expect(importer.getResolvedDate()).toBe("2026-01-31");
+      vi.restoreAllMocks();
+    });
+  });
+
+  describe("getMetadata", () => {
+    it("returns correct snapshotKey derived from data date", () => {
+      const importer = new TreasuryImporter();
+      const meta = importer.getMetadata("2026-01-31", "2026-03-01T00:00:00.000Z");
+      expect(meta.snapshotKey).toBe("2026-01");
+    });
+
+    it("returns a human-readable reporting period", () => {
+      const importer = new TreasuryImporter();
+      const meta = importer.getMetadata("2026-01-31", "2026-03-01T00:00:00.000Z");
+      expect(meta.reportingPeriod).toBe("January 2026");
+    });
+
+    it("returns the exact data date passed in", () => {
+      const importer = new TreasuryImporter();
+      const meta = importer.getMetadata("2025-09-30", "2025-10-15T12:00:00.000Z");
+      expect(meta.dataDate).toBe("2025-09-30");
+    });
+
+    it("returns the exact importedAt timestamp passed in", () => {
+      const importer = new TreasuryImporter();
+      const importedAt = "2026-03-01T17:43:13.000Z";
+      const meta = importer.getMetadata("2026-01-31", importedAt);
+      expect(meta.importedAt).toBe(importedAt);
+    });
+
+    it("includes source name, URL, and transformation notes", () => {
+      const importer = new TreasuryImporter();
+      const meta = importer.getMetadata("2026-01-31", "2026-03-01T00:00:00.000Z");
+      expect(meta.sourceName).toContain("Treasury");
+      expect(meta.sourceUrl).toContain("fiscaldata.treasury.gov");
+      expect(meta.transformationNotes.length).toBeGreaterThan(0);
+    });
+  });
+
   describe("getTargetDate", () => {
     beforeEach(() => {
       vi.stubGlobal("fetch", vi.fn());
