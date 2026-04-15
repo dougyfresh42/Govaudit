@@ -63,7 +63,7 @@ export default function BudgetDashboard({
           onChange={(e) => handleDatasetChange(e.target.value)}
           className="rounded border border-gray-300 bg-background-tertiary text-text-primary text-sm px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {DATASET_REGISTRY.map((d) => (
+        {DATASET_REGISTRY.map((d) => (
             <option key={d.id} value={d.id}>
               {d.displayName}
               {!d.isAvailable ? " (coming soon)" : ""}
@@ -108,6 +108,7 @@ export default function BudgetDashboard({
 
   const snapshot = datasetSnapshots[selectedIndex];
   const budget = parser.read(snapshot.csv) as BudgetItem[];
+  const isStub = snapshot.meta.dataStatus === "stub";
 
   const totalIncome = budget
     .filter((d) => d.type === "income" && d.amount > 0)
@@ -124,6 +125,33 @@ export default function BudgetDashboard({
     <div className="space-y-6">
       {/* Dataset selector */}
       {datasetSelector}
+
+      {/* Stub data warning banner */}
+      {isStub && (
+        <div
+          role="alert"
+          className="flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-700 px-4 py-3 text-sm text-amber-800 dark:text-amber-300"
+        >
+          <span aria-hidden="true" className="mt-0.5 text-base">⚠</span>
+          <p>
+            <span className="font-semibold">Placeholder data — </span>
+            the figures shown for{" "}
+            <span className="font-medium">{selectedDataset?.displayName ?? selectedDatasetId}</span>{" "}
+            are estimates and have not been sourced from the live data API. Do not
+            rely on these numbers.{" "}
+            {selectedDataset?.sourceUrl && (
+              <a
+                href={selectedDataset.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-amber-900 dark:hover:text-amber-100"
+              >
+                View source
+              </a>
+            )}.
+          </p>
+        </div>
+      )}
 
       {/* Snapshot selector — only shown when more than one snapshot is available */}
       {datasetSnapshots.length > 1 && (

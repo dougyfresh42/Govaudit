@@ -13,9 +13,11 @@ const IMPORTED_AT = "2026-04-15T00:00:00.000Z";
 function assertMarch2026Meta(
   meta: ReturnType<OhioImporter["getMetadata"]>,
   expectedDatasetId: string,
-  expectedSourceNameFragment: string
+  expectedSourceNameFragment: string,
+  expectedDataStatus: "pulled" | "stub" = "stub"
 ) {
   expect(meta.datasetId).toBe(expectedDatasetId);
+  expect(meta.dataStatus).toBe(expectedDataStatus);
   expect(meta.snapshotKey).toBe("2026-03");
   expect(meta.reportingPeriod).toBe("March 2026");
   expect(meta.dataDate).toBe("2026-03-31");
@@ -45,7 +47,7 @@ describe("OhioImporter", () => {
   it("getMetadata returns correct March 2026 provenance", () => {
     const imp = new OhioImporter();
     const meta = imp.getMetadata("2026-03-31", IMPORTED_AT);
-    assertMarch2026Meta(meta, "ohio", "Ohio");
+    assertMarch2026Meta(meta, "ohio", "Ohio", "pulled");
   });
 
   it("getMetadata transformation notes do not contain STUB or TODO markers", () => {
@@ -140,7 +142,7 @@ describe("WashingtonImporter", () => {
   it("getMetadata returns correct March 2026 provenance", () => {
     const imp = new WashingtonImporter();
     const meta = imp.getMetadata("2026-03-31", IMPORTED_AT);
-    assertMarch2026Meta(meta, "washington", "Washington");
+    assertMarch2026Meta(meta, "washington", "Washington", "stub");
   });
 
   it("fetch returns a value without throwing (stub)", async () => {
@@ -173,7 +175,7 @@ describe("MassachusettsImporter", () => {
   it("getMetadata returns correct March 2026 provenance", () => {
     const imp = new MassachusettsImporter();
     const meta = imp.getMetadata("2026-03-31", IMPORTED_AT);
-    assertMarch2026Meta(meta, "massachusetts", "Massachusetts");
+    assertMarch2026Meta(meta, "massachusetts", "Massachusetts", "pulled");
   });
 
   it("getMetadata transformation notes do not contain STUB or TODO markers", () => {
@@ -254,7 +256,7 @@ describe("ConnecticutImporter", () => {
   it("getMetadata returns correct March 2026 provenance", () => {
     const imp = new ConnecticutImporter();
     const meta = imp.getMetadata("2026-03-31", IMPORTED_AT);
-    assertMarch2026Meta(meta, "connecticut", "CT");
+    assertMarch2026Meta(meta, "connecticut", "CT", "stub");
   });
 
   it("fetch returns a value without throwing (stub)", async () => {
@@ -287,7 +289,7 @@ describe("FloridaImporter", () => {
   it("getMetadata returns correct March 2026 provenance", () => {
     const imp = new FloridaImporter();
     const meta = imp.getMetadata("2026-03-31", IMPORTED_AT);
-    assertMarch2026Meta(meta, "florida", "Florida");
+    assertMarch2026Meta(meta, "florida", "Florida", "stub");
   });
 
   it("fetch returns a value without throwing (stub)", async () => {

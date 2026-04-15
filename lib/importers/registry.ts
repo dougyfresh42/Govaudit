@@ -42,7 +42,7 @@ export const DATASET_REGISTRY: DatasetEntry[] = [
     description: "Ohio state budget — revenues and expenditures via Ohio Checkbook.",
     sourceUrl: "https://ohiocheckbook.ohio.gov/",
     targetDataDate: "2026-03-31",
-    isAvailable: false,
+    isAvailable: true,
   },
   {
     id: "washington",
@@ -58,7 +58,7 @@ export const DATASET_REGISTRY: DatasetEntry[] = [
     description: "Massachusetts state budget — revenues and expenditures via CTHRU.",
     sourceUrl: "https://cthru.data.mass.gov/",
     targetDataDate: "2026-03-31",
-    isAvailable: false,
+    isAvailable: true,
   },
   {
     id: "connecticut",

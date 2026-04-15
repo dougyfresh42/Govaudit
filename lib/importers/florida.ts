@@ -56,6 +56,7 @@ export class FloridaImporter implements Importer {
     });
     return {
       datasetId: FLORIDA_DATASET_ID,
+      dataStatus: "stub",
       snapshotKey,
       sourceName: FLORIDA_SOURCE_NAME,
       sourceUrl: FLORIDA_SOURCE_URL,

@@ -52,6 +52,7 @@ export class WashingtonImporter implements Importer {
     });
     return {
       datasetId: WASHINGTON_DATASET_ID,
+      dataStatus: "stub",
       snapshotKey,
       sourceName: WASHINGTON_SOURCE_NAME,
       sourceUrl: WASHINGTON_SOURCE_URL,

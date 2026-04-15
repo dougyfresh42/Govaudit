@@ -82,6 +82,7 @@ export class OhioImporter implements Importer {
     });
     return {
       datasetId: OHIO_DATASET_ID,
+      dataStatus: "pulled",
       snapshotKey,
       sourceName: OHIO_SOURCE_NAME,
       sourceUrl: OHIO_SOURCE_URL,

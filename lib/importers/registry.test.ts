@@ -25,9 +25,17 @@ describe("DATASET_REGISTRY", () => {
     expect(DATASET_REGISTRY[0].isAvailable).toBe(true);
   });
 
-  it("all state datasets are marked as coming-soon (not yet available)", () => {
-    const stateIds = ["ohio", "washington", "massachusetts", "connecticut", "florida"];
-    for (const id of stateIds) {
+  it("treasury, ohio, and massachusetts are marked as available", () => {
+    const availableIds = ["treasury", "ohio", "massachusetts"];
+    for (const id of availableIds) {
+      const entry = DATASET_REGISTRY.find((d) => d.id === id);
+      expect(entry?.isAvailable, `${id} should be isAvailable: true`).toBe(true);
+    }
+  });
+
+  it("washington, connecticut, and florida are marked as coming-soon (not yet available)", () => {
+    const comingSoonIds = ["washington", "connecticut", "florida"];
+    for (const id of comingSoonIds) {
       const entry = DATASET_REGISTRY.find((d) => d.id === id);
       expect(entry?.isAvailable, `${id} should be isAvailable: false`).toBe(false);
     }

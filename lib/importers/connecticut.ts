@@ -52,6 +52,7 @@ export class ConnecticutImporter implements Importer {
     });
     return {
       datasetId: CONNECTICUT_DATASET_ID,
+      dataStatus: "stub",
       snapshotKey,
       sourceName: CONNECTICUT_SOURCE_NAME,
       sourceUrl: CONNECTICUT_SOURCE_URL,

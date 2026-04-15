@@ -51,6 +51,7 @@ export class TreasuryImporter implements Importer {
     });
     return {
       datasetId: TREASURY_DATASET_ID,
+      dataStatus: "pulled",
       snapshotKey,
       sourceName: TREASURY_SOURCE_NAME,
       sourceUrl: TREASURY_SOURCE_URL,

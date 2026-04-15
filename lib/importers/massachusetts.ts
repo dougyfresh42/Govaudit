@@ -81,6 +81,7 @@ export class MassachusettsImporter implements Importer {
     });
     return {
       datasetId: MASSACHUSETTS_DATASET_ID,
+      dataStatus: "pulled",
       snapshotKey,
       sourceName: MASSACHUSETTS_SOURCE_NAME,
       sourceUrl: MASSACHUSETTS_SOURCE_URL,

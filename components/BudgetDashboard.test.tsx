@@ -15,6 +15,7 @@ const makeMeta = (
 ) => ({
   snapshotKey,
   datasetId,
+  dataStatus: "pulled" as const,
   sourceName: "U.S. Treasury MTS",
   sourceUrl: "https://fiscaldata.treasury.gov/",
   reportingPeriod,
@@ -104,15 +105,16 @@ const ohioCsv = `type,category,amount,description
 income,State Income Tax,750000000,"Ohio income tax"
 spending,Education,700000000,"Ohio education"`;
 
-const makeOhioMeta = () => ({
+const makeOhioMeta = (dataStatus: "pulled" | "stub" = "pulled") => ({
   snapshotKey: "2026-03",
   datasetId: "ohio",
+  dataStatus,
   sourceName: "Ohio Checkbook",
   sourceUrl: "https://ohiocheckbook.ohio.gov/",
   reportingPeriod: "March 2026",
   dataDate: "2026-03-31",
   importedAt: "2026-04-15T00:00:00.000Z",
-  transformationNotes: "Ohio stub notes.",
+  transformationNotes: "Ohio notes.",
 });
 
 const mixedSnapshots: BudgetSnapshot[] = [
@@ -200,5 +202,23 @@ describe("BudgetDashboard — dataset selector", () => {
       <BudgetDashboard snapshots={mixedSnapshots} defaultDatasetId="ohio" />
     );
     expect(screen.queryByLabelText("Snapshot selector")).toBeNull();
+  });
+
+  it("does not show a stub warning banner for pulled data", () => {
+    renderWithTheme(<BudgetDashboard snapshots={singleSnapshot} />);
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+
+  it("shows a stub warning banner when the active snapshot has dataStatus 'stub'", () => {
+    const stubSnapshots: BudgetSnapshot[] = [
+      { meta: makeOhioMeta("stub"), csv: ohioCsv },
+    ];
+    renderWithTheme(
+      <BudgetDashboard snapshots={stubSnapshots} defaultDatasetId="ohio" />
+    );
+    const banner = screen.getByRole("alert");
+    expect(banner).toBeTruthy();
+    // The banner text includes "Placeholder data" (case-insensitive match within the alert)
+    expect(banner.textContent).toMatch(/Placeholder data/i);
   });
 });

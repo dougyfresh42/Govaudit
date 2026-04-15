@@ -3,6 +3,7 @@
     "meta": {
       "snapshotKey": "2026-01",
       "datasetId": "treasury",
+      "dataStatus": "pulled",
       "sourceName": "U.S. Treasury Monthly Treasury Statement (MTS)",
       "sourceUrl": "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
       "reportingPeriod": "January 2026",
@@ -16,6 +17,7 @@
     "meta": {
       "snapshotKey": "2026-03",
       "datasetId": "ohio",
+      "dataStatus": "pulled",
       "sourceName": "Ohio Checkbook / Office of Budget and Management",
       "sourceUrl": "https://ohiocheckbook.ohio.gov/",
       "reportingPeriod": "March 2026",
@@ -29,6 +31,7 @@
     "meta": {
       "snapshotKey": "2026-03",
       "datasetId": "washington",
+      "dataStatus": "stub",
       "sourceName": "Washington State Fiscal Transparency",
       "sourceUrl": "https://fiscal.wa.gov/",
       "reportingPeriod": "March 2026",
@@ -42,6 +45,7 @@
     "meta": {
       "snapshotKey": "2026-03",
       "datasetId": "massachusetts",
+      "dataStatus": "pulled",
       "sourceName": "Massachusetts CTHRU",
       "sourceUrl": "https://cthru.data.mass.gov/",
       "reportingPeriod": "March 2026",
@@ -55,6 +59,7 @@
     "meta": {
       "snapshotKey": "2026-03",
       "datasetId": "connecticut",
+      "dataStatus": "stub",
       "sourceName": "Open Budget CT",
       "sourceUrl": "https://openbudget.ct.gov/",
       "reportingPeriod": "March 2026",
@@ -68,6 +73,7 @@
     "meta": {
       "snapshotKey": "2026-03",
       "datasetId": "florida",
+      "dataStatus": "stub",
       "sourceName": "Transparency Florida",
       "sourceUrl": "https://transparency.myflorida.com/",
       "reportingPeriod": "March 2026",
