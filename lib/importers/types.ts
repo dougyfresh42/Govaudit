@@ -4,11 +4,8 @@ import { BudgetItem } from "../parsers";
 export interface SnapshotMeta {
   /** Unique identifier for this snapshot, formatted as "YYYY-MM". */
   snapshotKey: string;
-  /**
-   * Identifier for the dataset this snapshot belongs to (e.g. "treasury", "ohio").
-   * Omitting this field is treated as "treasury" for backward compatibility.
-   */
-  datasetId?: string;
+  /** Identifier for the dataset this snapshot belongs to (e.g. "treasury", "ohio"). */
+  datasetId: string;
   /** Human-readable display name for the data source. */
   sourceName: string;
   /** Canonical URL of the data source or dataset landing page. */

@@ -11,7 +11,7 @@ function renderWithTheme(ui: React.ReactElement) {
 const makeMeta = (
   snapshotKey: string,
   reportingPeriod: string,
-  datasetId?: string
+  datasetId: string = "treasury"
 ) => ({
   snapshotKey,
   datasetId,
@@ -200,12 +200,5 @@ describe("BudgetDashboard — dataset selector", () => {
       <BudgetDashboard snapshots={mixedSnapshots} defaultDatasetId="ohio" />
     );
     expect(screen.queryByLabelText("Snapshot selector")).toBeNull();
-  });
-
-  it("legacy snapshots without datasetId are treated as treasury", () => {
-    // singleSnapshot has no datasetId — should appear under treasury
-    renderWithTheme(<BudgetDashboard snapshots={singleSnapshot} />);
-    // Treasury data should be visible under the default dataset
-    expect(screen.getByText(/U.S. Treasury MTS/)).toBeTruthy();
   });
 });

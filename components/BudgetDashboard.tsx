@@ -36,9 +36,8 @@ export default function BudgetDashboard({
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   // Filter snapshots to the active dataset.
-  // Legacy snapshots without a datasetId are treated as "treasury".
   const datasetSnapshots = snapshots.filter(
-    (s) => (s.meta.datasetId ?? DEFAULT_DATASET_ID) === selectedDatasetId
+    (s) => s.meta.datasetId === selectedDatasetId
   );
 
   const handleDatasetChange = (datasetId: string) => {

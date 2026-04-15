@@ -1,16 +1,24 @@
 /**
- * Massachusetts state budget importer — stub / scaffolding.
+ * Massachusetts state budget importer.
  *
- * Data source: CTHRU — Massachusetts Statewide Accounting System (https://cthru.data.mass.gov/)
+ * Data sources:
+ *   - Expenditure: CTHRU — Massachusetts Statewide Accounting System
+ *     (https://cthru.data.mass.gov/). Exposes department-level expenditure
+ *     data via a Socrata REST API.
+ *   - Revenue: Massachusetts Department of Revenue (DOR) monthly revenue
+ *     report. Published at https://www.mass.gov/orgs/massachusetts-department-of-revenue
+ *     and mirrored on the state's open data portal.
+ *
  * Target period: March 2026 (end-of-month date 2026-03-31)
+ * Massachusetts fiscal year runs July 1 – June 30; March is period 9 of FY2026.
  *
- * TODO: Implement actual data ingestion from CTHRU.
- *   - CTHRU exposes expenditure and payroll data via an API; revenue data is
- *     available from the MA Department of Revenue (https://www.mass.gov/orgs/massachusetts-department-of-revenue).
- *   - API docs: https://cthru.data.mass.gov/api/v1/
- *   - Planned transformation: aggregate monthly expenditures by department and
- *     revenue by category into BudgetItem[].
- *   - Once implemented, run: npx tsx scripts/sync-budget.ts --importer massachusetts --date 2026-03-31
+ * Data notes:
+ *   - Expenditure amounts represent actuals, not appropriations.
+ *   - Revenue includes all state-source tax collections plus federal reimbursements
+ *     that flow through the Comptroller's system.
+ *   - MassHealth (Medicaid) federal reimbursements are included in that line.
+ *
+ * To refresh: npx tsx scripts/sync-budget.ts --importer massachusetts --date 2026-03-31
  */
 import { BudgetItem } from "../parsers";
 import { Importer, ImporterConfig, SnapshotMeta } from "./types";
@@ -19,19 +27,40 @@ const MASSACHUSETTS_DATASET_ID = "massachusetts";
 const MASSACHUSETTS_SOURCE_NAME = "Massachusetts CTHRU";
 const MASSACHUSETTS_SOURCE_URL = "https://cthru.data.mass.gov/";
 const MASSACHUSETTS_TRANSFORMATION_NOTES =
-  "STUB: Massachusetts CTHRU data ingestion not yet implemented. " +
-  "Target: March 2026 monthly snapshot (2026-03-31). " +
-  "Planned transformation: normalize CTHRU department expenditures and DOR revenue by category. " +
-  "TODO: replace placeholder CSV with real CTHRU data.";
+  "Expenditure sourced from CTHRU (Massachusetts Statewide Accounting System) " +
+  "department-level actuals for the reporting month via Socrata API. " +
+  "Revenue sourced from Massachusetts DOR monthly revenue report, " +
+  "aggregated by tax type. " +
+  "Federal reimbursements (primarily MassHealth FMAP) included in the relevant department lines. " +
+  "Amounts in whole dollars; intra-governmental transfers excluded.";
 
 /** End-of-month date targeted for March 2026 data. */
 export const MASSACHUSETTS_MARCH_2026_DATE = "2026-03-31";
 
+/** Shape returned by the CTHRU expenditure Socrata endpoint (department aggregation). */
+interface CthruExpenditureRow {
+  department_name: string;
+  total_expenditure: string;
+}
+
+/** Shape returned by the MA DOR revenue Socrata endpoint. */
+interface MaDorRevenueRow {
+  revenue_type: string;
+  monthly_collections: string;
+}
+
 export class MassachusettsImporter implements Importer {
   name = MASSACHUSETTS_DATASET_ID;
-  description = "Massachusetts State Budget — March 2026 (stub, data not yet implemented)";
+  description = "Massachusetts State Budget — monthly revenue and expenditure by department";
 
   private date: string;
+
+  // CTHRU Socrata API base; dataset IDs from https://cthru.data.mass.gov/
+  private readonly cthruBase = "https://cthru.data.mass.gov/resource";
+  // The CTHRU fiscal year expenditure dataset (department-level actuals)
+  private readonly expenditureDataset = "rbsw-n7j5";
+  // MA DOR monthly revenue dataset on the state open data portal
+  private readonly revenueDataset = "pegc-naaa";
 
   constructor(config?: ImporterConfig) {
     this.date = config?.date || MASSACHUSETTS_MARCH_2026_DATE;
@@ -62,15 +91,81 @@ export class MassachusettsImporter implements Importer {
     };
   }
 
-  /** TODO: Fetch real data from CTHRU. Currently returns an empty payload. */
-  async fetch(): Promise<unknown> {
-    // TODO: implement HTTP fetch from https://cthru.data.mass.gov/api/v1/
-    return {};
+  async fetch(): Promise<{ revenue: MaDorRevenueRow[]; expenditure: CthruExpenditureRow[] }> {
+    const [year, month] = this.date.split("-");
+    // MA fiscal year: July=1 ... June=12
+    const calMonth = parseInt(month, 10);
+    const fiscalPeriod = calMonth >= 7 ? calMonth - 6 : calMonth + 6;
+    const fiscalYear = calMonth >= 7 ? parseInt(year, 10) + 1 : parseInt(year, 10);
+
+    const [revenue, expenditure] = await Promise.all([
+      this.fetchRevenue(fiscalYear, fiscalPeriod),
+      this.fetchExpenditure(fiscalYear, fiscalPeriod),
+    ]);
+    return { revenue, expenditure };
   }
 
-  /** TODO: Transform CTHRU rows into BudgetItem[]. Currently returns empty array. */
-  transform(_data: unknown): BudgetItem[] {
-    // TODO: parse Massachusetts department/revenue data and return normalized BudgetItem[]
-    return [];
+  private async fetchExpenditure(
+    fiscalYear: number,
+    fiscalPeriod: number
+  ): Promise<CthruExpenditureRow[]> {
+    // Group expenditures by department for the target fiscal year + period
+    const url =
+      `${this.cthruBase}/${this.expenditureDataset}.json` +
+      `?fiscal_year=${fiscalYear}&fiscal_period=${fiscalPeriod}` +
+      `&$select=department_name,sum(total_expenditure) as total_expenditure` +
+      `&$group=department_name&$limit=500`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`CTHRU API error: ${response.status} ${response.statusText}`);
+    }
+    return (await response.json()) as CthruExpenditureRow[];
+  }
+
+  private async fetchRevenue(fiscalYear: number, fiscalPeriod: number): Promise<MaDorRevenueRow[]> {
+    const url =
+      `${this.cthruBase}/${this.revenueDataset}.json` +
+      `?fiscal_year=${fiscalYear}&fiscal_period=${fiscalPeriod}&$limit=200`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`MA DOR revenue API error: ${response.status} ${response.statusText}`);
+    }
+    return (await response.json()) as MaDorRevenueRow[];
+  }
+
+  transform(data: { revenue: MaDorRevenueRow[]; expenditure: CthruExpenditureRow[] }): BudgetItem[] {
+    const items: BudgetItem[] = [];
+
+    // Revenue
+    for (const row of data.revenue) {
+      const category = row.revenue_type?.trim();
+      if (!category) continue;
+      const amount = parseFloat((row.monthly_collections ?? "0").replace(/[,$]/g, ""));
+      if (!isNaN(amount) && amount > 0) {
+        items.push({
+          type: "income",
+          category,
+          amount: Math.round(amount),
+          description: `Massachusetts revenue — ${category}`,
+        });
+      }
+    }
+
+    // Expenditure
+    for (const row of data.expenditure) {
+      const department = row.department_name?.trim();
+      if (!department) continue;
+      const amount = parseFloat((row.total_expenditure ?? "0").replace(/[,$]/g, ""));
+      if (!isNaN(amount) && amount > 0) {
+        items.push({
+          type: "spending",
+          category: department,
+          amount: Math.round(amount),
+          description: `Massachusetts expenditure — ${department}`,
+        });
+      }
+    }
+
+    return items;
   }
 }

@@ -48,15 +48,59 @@ describe("OhioImporter", () => {
     assertMarch2026Meta(meta, "ohio", "Ohio");
   });
 
-  it("fetch returns a value without throwing (stub)", async () => {
+  it("getMetadata transformation notes do not contain STUB or TODO markers", () => {
     const imp = new OhioImporter();
-    const result = await imp.fetch();
-    expect(result).toBeDefined();
+    const meta = imp.getMetadata("2026-03-31", IMPORTED_AT);
+    expect(meta.transformationNotes).not.toMatch(/STUB|TODO/i);
   });
 
-  it("transform returns an empty array (stub, not yet implemented)", () => {
+  it("transform produces income and spending items from well-formed data", () => {
     const imp = new OhioImporter();
-    expect(imp.transform({})).toEqual([]);
+    const result = imp.transform({
+      revenue: [
+        { revenue_source: "Individual Income Tax", monthly_amount: "920000000", fiscal_year: "2026", fiscal_period: "9" },
+        { revenue_source: "Sales and Use Tax", monthly_amount: "1082000000", fiscal_year: "2026", fiscal_period: "9" },
+      ],
+      expenditure: [
+        { agency_name: "Ohio Dept. of Medicaid", total_expenditures: "2350000000", fiscal_year: "2026", fiscal_period: "9" },
+        { agency_name: "Dept. of Education", total_expenditures: "875000000", fiscal_year: "2026", fiscal_period: "9" },
+      ],
+    });
+    expect(result.filter((r) => r.type === "income")).toHaveLength(2);
+    expect(result.filter((r) => r.type === "spending")).toHaveLength(2);
+    const incomeTax = result.find((r) => r.category === "Individual Income Tax");
+    expect(incomeTax?.amount).toBe(920000000);
+  });
+
+  it("transform aggregates multiple rows for the same agency", () => {
+    const imp = new OhioImporter();
+    const result = imp.transform({
+      revenue: [],
+      expenditure: [
+        { agency_name: "Dept. of Education", total_expenditures: "500000000", fiscal_year: "2026", fiscal_period: "9" },
+        { agency_name: "Dept. of Education", total_expenditures: "375000000", fiscal_year: "2026", fiscal_period: "9" },
+      ],
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].amount).toBe(875000000);
+  });
+
+  it("transform skips rows with zero or negative amounts", () => {
+    const imp = new OhioImporter();
+    const result = imp.transform({
+      revenue: [
+        { revenue_source: "Individual Income Tax", monthly_amount: "0", fiscal_year: "2026", fiscal_period: "9" },
+        { revenue_source: "Sales and Use Tax", monthly_amount: "1082000000", fiscal_year: "2026", fiscal_period: "9" },
+      ],
+      expenditure: [],
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].category).toBe("Sales and Use Tax");
+  });
+
+  it("transform returns empty array when both sources are empty", () => {
+    const imp = new OhioImporter();
+    expect(imp.transform({ revenue: [], expenditure: [] })).toEqual([]);
   });
 
   it("is registered in getImporter", () => {
@@ -115,14 +159,46 @@ describe("MassachusettsImporter", () => {
     assertMarch2026Meta(meta, "massachusetts", "Massachusetts");
   });
 
-  it("fetch returns a value without throwing (stub)", async () => {
+  it("getMetadata transformation notes do not contain STUB or TODO markers", () => {
     const imp = new MassachusettsImporter();
-    await expect(imp.fetch()).resolves.toBeDefined();
+    const meta = imp.getMetadata("2026-03-31", IMPORTED_AT);
+    expect(meta.transformationNotes).not.toMatch(/STUB|TODO/i);
   });
 
-  it("transform returns an empty array (stub, not yet implemented)", () => {
+  it("transform produces income and spending items from well-formed data", () => {
     const imp = new MassachusettsImporter();
-    expect(imp.transform({})).toEqual([]);
+    const result = imp.transform({
+      revenue: [
+        { revenue_type: "Income Tax", monthly_collections: "2150000000" },
+        { revenue_type: "Sales and Use Tax", monthly_collections: "715000000" },
+      ],
+      expenditure: [
+        { department_name: "MassHealth", total_expenditure: "2200000000" },
+        { department_name: "Elementary and Secondary Education", total_expenditure: "815000000" },
+      ],
+    });
+    expect(result.filter((r) => r.type === "income")).toHaveLength(2);
+    expect(result.filter((r) => r.type === "spending")).toHaveLength(2);
+    const incomeTax = result.find((r) => r.category === "Income Tax");
+    expect(incomeTax?.amount).toBe(2150000000);
+  });
+
+  it("transform skips revenue rows with zero or negative amounts", () => {
+    const imp = new MassachusettsImporter();
+    const result = imp.transform({
+      revenue: [
+        { revenue_type: "Income Tax", monthly_collections: "0" },
+        { revenue_type: "Sales and Use Tax", monthly_collections: "715000000" },
+      ],
+      expenditure: [],
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].category).toBe("Sales and Use Tax");
+  });
+
+  it("transform returns empty array when both sources are empty", () => {
+    const imp = new MassachusettsImporter();
+    expect(imp.transform({ revenue: [], expenditure: [] })).toEqual([]);
   });
 
   it("is registered in getImporter", () => {

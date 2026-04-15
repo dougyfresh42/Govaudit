@@ -5,6 +5,7 @@ import type { SnapshotMeta } from "@/lib/importers/types";
 
 const sampleMeta: SnapshotMeta = {
   snapshotKey: "2026-01",
+  datasetId: "treasury",
   sourceName: "U.S. Treasury Monthly Treasury Statement (MTS)",
   sourceUrl: "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/",
   reportingPeriod: "January 2026",
