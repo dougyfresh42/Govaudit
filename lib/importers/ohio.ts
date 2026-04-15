@@ -160,6 +160,7 @@ export class OhioImporter implements Importer {
       }
     }
     for (const [agency, total] of byAgency) {
+      if (total <= 0) continue;
       items.push({
         type: "spending",
         category: agency,

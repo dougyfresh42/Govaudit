@@ -98,6 +98,23 @@ describe("OhioImporter", () => {
     expect(result[0].category).toBe("Sales and Use Tax");
   });
 
+  it("transform skips expenditure agencies with zero or negative aggregate totals", () => {
+    const imp = new OhioImporter();
+    const result = imp.transform({
+      revenue: [],
+      expenditure: [
+        { agency_name: "Dept. of Education", total_expenditures: "875000000", fiscal_year: "2026", fiscal_period: "9" },
+        // Net-zero agency (returned funds equal to spend)
+        { agency_name: "Returned Funds Agency", total_expenditures: "-50000000", fiscal_year: "2026", fiscal_period: "9" },
+        { agency_name: "Zero Agency", total_expenditures: "0", fiscal_year: "2026", fiscal_period: "9" },
+      ],
+    });
+    const agencies = result.map((r) => r.category);
+    expect(agencies).toContain("Dept. of Education");
+    expect(agencies).not.toContain("Returned Funds Agency");
+    expect(agencies).not.toContain("Zero Agency");
+  });
+
   it("transform returns empty array when both sources are empty", () => {
     const imp = new OhioImporter();
     expect(imp.transform({ revenue: [], expenditure: [] })).toEqual([]);
@@ -194,6 +211,22 @@ describe("MassachusettsImporter", () => {
     });
     expect(result).toHaveLength(1);
     expect(result[0].category).toBe("Sales and Use Tax");
+  });
+
+  it("transform skips expenditure departments with zero or negative amounts", () => {
+    const imp = new MassachusettsImporter();
+    const result = imp.transform({
+      revenue: [],
+      expenditure: [
+        { department_name: "MassHealth", total_expenditure: "2200000000" },
+        { department_name: "Adjustment Account", total_expenditure: "-500000" },
+        { department_name: "Zero Dept", total_expenditure: "0" },
+      ],
+    });
+    const depts = result.map((r) => r.category);
+    expect(depts).toContain("MassHealth");
+    expect(depts).not.toContain("Adjustment Account");
+    expect(depts).not.toContain("Zero Dept");
   });
 
   it("transform returns empty array when both sources are empty", () => {
