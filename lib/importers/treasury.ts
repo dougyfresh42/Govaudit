@@ -1,6 +1,7 @@
 import { BudgetItem } from "../parsers";
 import { Importer, ImporterConfig, SnapshotMeta } from "./types";
 
+const TREASURY_DATASET_ID = "treasury";
 const TREASURY_SOURCE_NAME = "U.S. Treasury Monthly Treasury Statement (MTS)";
 const TREASURY_SOURCE_URL =
   "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/";
@@ -49,6 +50,8 @@ export class TreasuryImporter implements Importer {
       timeZone: "UTC",
     });
     return {
+      datasetId: TREASURY_DATASET_ID,
+      dataStatus: "pulled",
       snapshotKey,
       sourceName: TREASURY_SOURCE_NAME,
       sourceUrl: TREASURY_SOURCE_URL,

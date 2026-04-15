@@ -9,23 +9,106 @@ import { ChartErrorBoundary } from "@/components/ChartErrorBoundary";
 import IncomeSpendingMeter from "@/components/IncomeSpendingMeter";
 import BudgetPieChart from "@/components/BudgetPieChart";
 import DataSourceInfo from "@/components/DataSourceInfo";
+import { DATASET_REGISTRY, DEFAULT_DATASET_ID } from "@/lib/importers/registry";
 
 const parser = new CsvParser();
 
 type Props = {
   snapshots: BudgetSnapshot[];
+  defaultDatasetId?: string;
 };
 
 /**
  * Client-side dashboard. Receives all historical snapshots from the server
  * component and manages which snapshot is currently displayed.
  * Snapshots are expected newest-first; index 0 is the default current view.
+ *
+ * A dataset selector dropdown allows switching between supported data sources
+ * (U.S. Federal, Ohio, Washington, Massachusetts, Connecticut, Florida).
+ * The selected dataset filters the snapshot list; within each dataset the
+ * existing reporting-period selector allows switching between historical months.
  */
-export default function BudgetDashboard({ snapshots }: Props) {
+export default function BudgetDashboard({
+  snapshots,
+  defaultDatasetId = DEFAULT_DATASET_ID,
+}: Props) {
+  const [selectedDatasetId, setSelectedDatasetId] = useState(defaultDatasetId);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const snapshot = snapshots[selectedIndex];
+  // Filter snapshots to the active dataset.
+  const datasetSnapshots = snapshots.filter(
+    (s) => s.meta.datasetId === selectedDatasetId
+  );
+
+  const handleDatasetChange = (datasetId: string) => {
+    setSelectedDatasetId(datasetId);
+    setSelectedIndex(0);
+  };
+
+  const selectedDataset = DATASET_REGISTRY.find((d) => d.id === selectedDatasetId);
+
+  // ── Dataset selector (always visible) ──────────────────────────────────────
+  const datasetSelector = (
+    <section aria-label="Dataset selector">
+      <div className="flex flex-wrap items-center gap-3">
+        <label
+          htmlFor="dataset-select"
+          className="text-sm text-text-secondary font-medium whitespace-nowrap"
+        >
+          Data source:
+        </label>
+        <select
+          id="dataset-select"
+          value={selectedDatasetId}
+          onChange={(e) => handleDatasetChange(e.target.value)}
+          className="rounded border border-gray-300 bg-background-tertiary text-text-primary text-sm px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+        {DATASET_REGISTRY.map((d) => (
+            <option key={d.id} value={d.id}>
+              {d.displayName}
+              {!d.isAvailable ? " (coming soon)" : ""}
+            </option>
+          ))}
+        </select>
+        {selectedDataset && (
+          <span className="text-xs text-text-muted hidden sm:inline">
+            {selectedDataset.description}
+          </span>
+        )}
+      </div>
+    </section>
+  );
+
+  // ── No snapshots for this dataset ──────────────────────────────────────────
+  if (datasetSnapshots.length === 0) {
+    return (
+      <div className="space-y-6">
+        {datasetSelector}
+        <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-600 p-8 text-center">
+          <p className="text-text-secondary font-medium mb-1">
+            Data not yet available for {selectedDataset?.displayName ?? selectedDatasetId}
+          </p>
+          <p className="text-text-muted text-sm">
+            The importer for this dataset is scaffolded and targeting March 2026 data.
+            Check back after the next import run, or{" "}
+            <a
+              href={selectedDataset?.sourceUrl ?? "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-text-primary"
+            >
+              view the source directly
+            </a>
+            .
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const snapshot = datasetSnapshots[selectedIndex];
   const budget = parser.read(snapshot.csv) as BudgetItem[];
+  const isStub = snapshot.meta.dataStatus === "stub";
 
   const totalIncome = budget
     .filter((d) => d.type === "income" && d.amount > 0)
@@ -40,12 +123,42 @@ export default function BudgetDashboard({ snapshots }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Dataset selector */}
+      {datasetSelector}
+
+      {/* Stub data warning banner */}
+      {isStub && (
+        <div
+          role="alert"
+          className="flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-700 px-4 py-3 text-sm text-amber-800 dark:text-amber-300"
+        >
+          <span aria-hidden="true" className="mt-0.5 text-base">⚠</span>
+          <p>
+            <span className="font-semibold">Placeholder data — </span>
+            the figures shown for{" "}
+            <span className="font-medium">{selectedDataset?.displayName ?? selectedDatasetId}</span>{" "}
+            are estimates and have not been sourced from the live data API. Do not
+            rely on these numbers.{" "}
+            {selectedDataset?.sourceUrl && (
+              <a
+                href={selectedDataset.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-amber-900 dark:hover:text-amber-100"
+              >
+                View source
+              </a>
+            )}.
+          </p>
+        </div>
+      )}
+
       {/* Snapshot selector — only shown when more than one snapshot is available */}
-      {snapshots.length > 1 && (
+      {datasetSnapshots.length > 1 && (
         <section aria-label="Snapshot selector">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm text-text-secondary font-medium">Reporting Period:</span>
-            {snapshots.map((s, i) => (
+            {datasetSnapshots.map((s, i) => (
               <button
                 key={s.meta.snapshotKey}
                 onClick={() => setSelectedIndex(i)}
@@ -79,7 +192,8 @@ export default function BudgetDashboard({ snapshots }: Props) {
       {/* Summary cards */}
       <section>
         <p className="text-text-secondary mb-4 text-sm sm:text-base">
-          This dashboard visualizes the income and spending of the U.S. Federal Government.
+          This dashboard visualizes the income and spending of{" "}
+          {selectedDataset?.displayName ?? "the selected government entity"}.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-background-tertiary rounded-lg shadow p-4 sm:p-6">
