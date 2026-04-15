@@ -2,9 +2,11 @@ import * as fs from "fs";
 import * as path from "path";
 import { getImporter } from "../lib/importers";
 import { CsvParser } from "../lib/parsers/csv";
+import type { BudgetSnapshot } from "../lib/importers/types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DEFAULT_OUTPUT = "budget.ts";
+const SNAPSHOTS_FILE = path.join(DATA_DIR, "snapshots.json");
 
 interface Args {
   importer?: string;
@@ -54,8 +56,8 @@ Usage: npx tsx scripts/sync-budget.ts [options]
 
 Options:
   -i, --importer <name>   Importer to use (default: treasury)
-  -o, --output <file>    Output file (default: data/budget.csv)
-  -f, --format <format>  Output format: csv (default), json
+  -o, --output <file>    Output file (default: data/budget.ts)
+  -f, --format <format>  Output format: ts (default), csv, json
   -d, --date <date>      Record date: YYYY-MM-DD or 'latest' (default: latest)
   -h, --help             Show this help message
 
@@ -68,6 +70,18 @@ Examples:
 Available importers:
   - treasury: U.S. Federal Budget (FY2025) by agency
 `);
+}
+
+/** Load existing snapshots from snapshots.json; returns [] if the file does not exist. */
+function loadSnapshots(): BudgetSnapshot[] {
+  if (!fs.existsSync(SNAPSHOTS_FILE)) return [];
+  const raw = fs.readFileSync(SNAPSHOTS_FILE, "utf-8");
+  return JSON.parse(raw) as BudgetSnapshot[];
+}
+
+/** Persist the snapshot array to snapshots.json. */
+function saveSnapshots(snapshots: BudgetSnapshot[]): void {
+  fs.writeFileSync(SNAPSHOTS_FILE, JSON.stringify(snapshots, null, 2) + "\n");
 }
 
 async function main() {
@@ -114,11 +128,46 @@ async function main() {
     output = parser.write(budgetItems);
   }
 
-  const ext = format === "json" ? "json" : format === "ts" ? "ts" : "csv";
-  const outputPath = path.join(DATA_DIR, `${outputFileName}.${ext}`);
-  fs.writeFileSync(outputPath, output);
+  // ------------------------------------------------------------------
+  // Append-only snapshot logic (always runs for the default ts format)
+  // ------------------------------------------------------------------
+  if (format === "ts" && importer.getMetadata) {
+    const importedAt = new Date().toISOString();
 
-  console.log(`\nWrote ${budgetItems.length} items to ${outputPath}`);
+    // Resolve the data date that was actually fetched
+    const resolvedDate: string = (() => {
+      // TreasuryImporter exposes getResolvedDate(); fall back to today if missing
+      const imp = importer as unknown as { getResolvedDate?(): string | null };
+      return imp.getResolvedDate?.() ?? new Date().toISOString().slice(0, 10);
+    })();
+
+    const meta = importer.getMetadata(resolvedDate, importedAt);
+    const csvContent = parser.write(budgetItems);
+    const newSnapshot: BudgetSnapshot = { meta, csv: csvContent };
+
+    const existing = loadSnapshots();
+    const isDuplicate = existing.some((s) => s.meta.snapshotKey === meta.snapshotKey);
+
+    if (isDuplicate) {
+      console.log(`\nSnapshot ${meta.snapshotKey} already exists — skipping append.`);
+    } else {
+      // Prepend so the newest snapshot is always first
+      const updated = [newSnapshot, ...existing];
+      saveSnapshots(updated);
+      console.log(`\nAppended snapshot ${meta.snapshotKey} to ${SNAPSHOTS_FILE}`);
+      console.log(`Total snapshots stored: ${updated.length}`);
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Legacy / non-ts output (csv, json, or custom paths)
+  // ------------------------------------------------------------------
+  if (format !== "ts" || (args.output && args.output !== DEFAULT_OUTPUT)) {
+    const ext = format === "json" ? "json" : format === "ts" ? "ts" : "csv";
+    const outputPath = path.join(DATA_DIR, `${outputFileName}.${ext}`);
+    fs.writeFileSync(outputPath, output);
+    console.log(`\nWrote ${budgetItems.length} items to ${outputPath}`);
+  }
 
   const totalIncome = budgetItems.filter((i) => i.type === "income").reduce((sum, i) => sum + i.amount, 0);
   const totalSpending = budgetItems.filter((i) => i.type === "spending").reduce((sum, i) => sum + i.amount, 0);
