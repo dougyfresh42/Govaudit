@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./context/ThemeContext";
+import HamburgerMenu from "@/components/HamburgerMenu";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,10 +26,11 @@ export default function RootLayout({
         <ThemeProvider>
           <div className="min-h-screen bg-background-secondary">
             <header className="bg-background-tertiary shadow-sm">
-              <div className="max-w-7xl mx-auto px-4 py-4">
+              <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-text-primary">
                   Government Audit
                 </h1>
+                <HamburgerMenu />
               </div>
             </header>
             <main className="max-w-7xl mx-auto px-4 py-8">
