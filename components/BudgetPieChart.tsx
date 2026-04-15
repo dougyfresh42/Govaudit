@@ -47,9 +47,13 @@ export default function BudgetPieChart({ data, type, title }: Props) {
         `${params.name}<br/>$${params.value.toLocaleString()}M (${params.percent}%)`,
     },
     legend: {
+      type: "scroll" as const,
       orient: "horizontal" as const,
       bottom: 0,
       left: "center",
+      width: "90%",
+      pageIconColor: subTextColor,
+      pageTextStyle: { color: subTextColor },
       itemGap: 8,
       textStyle: {
         color: subTextColor,
