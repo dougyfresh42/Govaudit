@@ -26,3 +26,10 @@ AGENTS.md specifies generically some development strategies relevant to LLMs in 
 ## Data Location
 
 Data files are stored in `data/budget.ts` (a TypeScript module exporting a CSV string). Add new datasets there and import them in components.
+
+## UI / Mobile Design
+
+The site is designed mobile-first using Tailwind CSS responsive utilities (`sm:`, `lg:`, etc.). Charts must render usably on small screens. The page layout follows this order:
+1. **Income vs. Spending meter** — a full-width ratio bar (like a YouTube like/dislike meter).
+2. **Summary cards** — a responsive 1→3 column grid with income, spending, and surplus/deficit.
+3. **Pie charts** — a responsive 1→2 column grid breaking down income and spending by category.
