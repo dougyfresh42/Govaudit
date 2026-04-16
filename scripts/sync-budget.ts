@@ -146,7 +146,9 @@ async function main() {
     const newSnapshot: BudgetSnapshot = { meta, csv: csvContent };
 
     const existing = loadSnapshots();
-    const isDuplicate = existing.some((s) => s.meta.snapshotKey === meta.snapshotKey);
+    const isDuplicate = existing.some(
+      (s) => s.meta.snapshotKey === meta.snapshotKey && s.meta.datasetId === meta.datasetId
+    );
 
     if (isDuplicate) {
       console.log(`\nSnapshot ${meta.snapshotKey} already exists — skipping append.`);
