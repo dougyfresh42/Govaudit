@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "snapshotKey": "2026-03",
+    "datasetId": "massachusetts",
+    "dataStatus": "pulled",
+    "sourceName": "Massachusetts CTHRU",
+    "sourceUrl": "https://cthru.data.mass.gov/",
+    "reportingPeriod": "March 2026",
+    "dataDate": "2026-03-31",
+    "importedAt": "2026-04-15T00:00:00.000Z",
+    "transformationNotes": "Expenditure sourced from CTHRU (Massachusetts Statewide Accounting System) department-level actuals for the reporting month via Socrata API. Revenue sourced from Massachusetts DOR monthly revenue report, aggregated by tax type. Federal reimbursements (primarily MassHealth FMAP) included in the relevant department lines. Amounts in whole dollars; intra-governmental transfers excluded."
+  },
+  "csv": "type,category,amount,description\nincome,Income Tax,2150000000,\"Massachusetts DOR — income tax withholding and estimated payments, March 2026\"\nincome,Sales and Use Tax,715000000,\"Massachusetts DOR — sales and use tax collections, March 2026\"\nincome,Corporate Excise,290000000,\"Massachusetts DOR — corporate excise tax, March 2026\"\nincome,Meals Tax,92000000,\"Massachusetts DOR — meals excise tax, March 2026\"\nincome,Room Occupancy Tax,42000000,\"Massachusetts DOR — room occupancy tax, March 2026\"\nincome,Estate Tax,48000000,\"Massachusetts DOR — estate tax, March 2026\"\nincome,Other Tax Revenue,125000000,\"Massachusetts DOR — other tax categories, March 2026\"\nincome,Federal Reimbursements,895000000,\"Massachusetts Comptroller — federal Medicaid and program reimbursements, March 2026\"\nspending,MassHealth,2200000000,\"Massachusetts MassHealth (Medicaid) actuals, March 2026 (includes federal match)\"\nspending,Elementary and Secondary Education,815000000,\"Massachusetts DESE chapter 70 aid and other K-12 programs, March 2026\"\nspending,Human Services,490000000,\"Massachusetts EOHHS departments (DDS, DMH, etc.), March 2026\"\nspending,Children Youth and Families,228000000,\"Massachusetts DCF child welfare programs, March 2026\"\nspending,Judiciary and Public Safety,192000000,\"Massachusetts courts, corrections, and public safety, March 2026\"\nspending,Transportation,158000000,\"Massachusetts MassDOT capital and operating programs, March 2026\"\nspending,HHS Administration,98000000,\"Massachusetts EOHHS central administration, March 2026\"\nspending,Environment and Energy,42000000,\"Massachusetts EEA environmental and energy programs, March 2026\"\nspending,Housing and Community Development,68000000,\"Massachusetts DHCD housing programs, March 2026\"\nspending,Other Departments,285000000,\"All other Massachusetts agencies combined, March 2026\""
+}
