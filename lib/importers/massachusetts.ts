@@ -25,7 +25,7 @@ import { Importer, ImporterConfig, SnapshotMeta } from "./types";
 
 const MASSACHUSETTS_DATASET_ID = "massachusetts";
 const MASSACHUSETTS_SOURCE_NAME = "Massachusetts CTHRU";
-const MASSACHUSETTS_SOURCE_URL = "https://cthru.data.mass.gov/";
+const MASSACHUSETTS_SOURCE_URL = "https://cthru.data.socrata.com/";
 const MASSACHUSETTS_TRANSFORMATION_NOTES =
   "Expenditure sourced from CTHRU (Massachusetts Statewide Accounting System) " +
   "department-level actuals for the reporting month via Socrata API. " +
@@ -55,12 +55,12 @@ export class MassachusettsImporter implements Importer {
 
   private date: string;
 
-  // CTHRU Socrata API base; dataset IDs from https://cthru.data.mass.gov/
-  private readonly cthruBase = "https://cthru.data.mass.gov/resource";
-  // The CTHRU fiscal year expenditure dataset (department-level actuals)
-  private readonly expenditureDataset = "rbsw-n7j5";
-  // MA DOR monthly revenue dataset on the state open data portal
-  private readonly revenueDataset = "pegc-naaa";
+  // CTHRU Socrata API base; datasets from https://cthru.data.socrata.com/
+  private readonly cthruBase = "https://cthru.data.socrata.com/resource";
+  // CTHRU Comptroller spending dataset (department-level actuals)
+  private readonly expenditureDataset = "pegc-naaa";
+  // Commonwealth Revenue Collections dataset
+  private readonly revenueDataset = "kcy7-ivxi";
 
   constructor(config?: ImporterConfig) {
     this.date = config?.date || MASSACHUSETTS_MARCH_2026_DATE;
@@ -110,12 +110,13 @@ export class MassachusettsImporter implements Importer {
     fiscalYear: number,
     fiscalPeriod: number
   ): Promise<CthruExpenditureRow[]> {
-    // Group expenditures by department for the target fiscal year + period
+    // Group expenditures by department for the target fiscal year + period.
+    // CTHRU uses "budget_fiscal_year" and "fiscal_period" as filter columns.
     const url =
       `${this.cthruBase}/${this.expenditureDataset}.json` +
-      `?fiscal_year=${fiscalYear}&fiscal_period=${fiscalPeriod}` +
-      `&$select=department_name,sum(total_expenditure) as total_expenditure` +
-      `&$group=department_name&$limit=500`;
+      `?budget_fiscal_year=${fiscalYear}&fiscal_period=${fiscalPeriod}` +
+      `&$select=department as department_name,sum(amount) as total_expenditure` +
+      `&$group=department&$limit=500`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`CTHRU API error: ${response.status} ${response.statusText}`);
@@ -124,9 +125,13 @@ export class MassachusettsImporter implements Importer {
   }
 
   private async fetchRevenue(fiscalYear: number, fiscalPeriod: number): Promise<MaDorRevenueRow[]> {
+    // Commonwealth Revenue Collections — aggregate by revenue source.
+    // CTHRU uses "fiscal_year" and "fiscal_period" (numeric) as filter columns.
     const url =
       `${this.cthruBase}/${this.revenueDataset}.json` +
-      `?fiscal_year=${fiscalYear}&fiscal_period=${fiscalPeriod}&$limit=200`;
+      `?fiscal_year=${fiscalYear}&fiscal_period=${fiscalPeriod}` +
+      `&$select=revenue_source_name as revenue_type,sum(revenue_collected) as monthly_collections` +
+      `&$group=revenue_source_name&$limit=200`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`MA DOR revenue API error: ${response.status} ${response.statusText}`);

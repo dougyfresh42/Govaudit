@@ -58,10 +58,13 @@ export class OhioImporter implements Importer {
 
   private date: string;
 
-  // Ohio Open Data (data.ohio.gov) Socrata API identifiers
-  private readonly baseUrl = "https://data.ohio.gov/api/v1/datastore/query";
-  private readonly expenditureDatasetId = "ohiocheckbook-expenditures";
-  private readonly revenueDatasetId = "obm-general-revenue-fund";
+  // NOTE: The Ohio Checkbook (ohiocheckbook.ohio.gov) and DataOhio portal
+  // (data.ohio.gov) do not expose a public queryable REST API for per-period
+  // revenue or expenditure data. Data is only available as bulk ZIP downloads
+  // from the DataOhio portal. Until a reliable API or automated download
+  // approach is implemented, this importer returns stub (empty) data.
+  // The March 2026 snapshot is hand-crafted and cached; new months require
+  // manual entry or a bulk-download integration.
 
   constructor(config?: ImporterConfig) {
     this.date = config?.date || OHIO_MARCH_2026_DATE;
@@ -82,7 +85,7 @@ export class OhioImporter implements Importer {
     });
     return {
       datasetId: OHIO_DATASET_ID,
-      dataStatus: "pulled",
+      dataStatus: "stub",
       snapshotKey,
       sourceName: OHIO_SOURCE_NAME,
       sourceUrl: OHIO_SOURCE_URL,
@@ -94,42 +97,7 @@ export class OhioImporter implements Importer {
   }
 
   async fetch(): Promise<{ revenue: OhioRevenueRow[]; expenditure: OhioExpenditureRow[] }> {
-    const [year, month] = this.date.split("-");
-    // Ohio fiscal year: July=1 ... June=12. Convert calendar month to fiscal period.
-    const calMonth = parseInt(month, 10);
-    // FY starts July (month 7); periods 1-12 map to July-June.
-    const fiscalPeriod = calMonth >= 7 ? calMonth - 6 : calMonth + 6;
-    const fiscalYear = calMonth >= 7 ? parseInt(year, 10) + 1 : parseInt(year, 10);
-
-    const [revenue, expenditure] = await Promise.all([
-      this.fetchRevenue(fiscalYear, fiscalPeriod),
-      this.fetchExpenditure(fiscalYear, fiscalPeriod),
-    ]);
-    return { revenue, expenditure };
-  }
-
-  private async fetchRevenue(fiscalYear: number, fiscalPeriod: number): Promise<OhioRevenueRow[]> {
-    const url =
-      `${this.baseUrl}/${this.revenueDatasetId}` +
-      `?fiscal_year=${fiscalYear}&fiscal_period=${fiscalPeriod}&limit=100`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Ohio revenue API error: ${response.status} ${response.statusText}`);
-    }
-    const json = await response.json();
-    return (json.results ?? json.data ?? []) as OhioRevenueRow[];
-  }
-
-  private async fetchExpenditure(fiscalYear: number, fiscalPeriod: number): Promise<OhioExpenditureRow[]> {
-    const url =
-      `${this.baseUrl}/${this.expenditureDatasetId}` +
-      `?fiscal_year=${fiscalYear}&fiscal_period=${fiscalPeriod}&limit=5000`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Ohio Checkbook API error: ${response.status} ${response.statusText}`);
-    }
-    const json = await response.json();
-    return (json.results ?? json.data ?? []) as OhioExpenditureRow[];
+    return { revenue: [], expenditure: [] };
   }
 
   transform(data: { revenue: OhioRevenueRow[]; expenditure: OhioExpenditureRow[] }): BudgetItem[] {
