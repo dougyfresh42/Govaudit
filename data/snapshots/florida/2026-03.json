@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "snapshotKey": "2026-03",
+    "datasetId": "florida",
+    "dataStatus": "stub",
+    "sourceName": "Transparency Florida",
+    "sourceUrl": "https://transparency.myflorida.com/",
+    "reportingPeriod": "March 2026",
+    "dataDate": "2026-03-31",
+    "importedAt": "2026-04-15T00:00:00.000Z",
+    "transformationNotes": "STUB: Transparency Florida / FLAIR data ingestion not yet implemented. Target: March 2026 monthly snapshot (2026-03-31). Note: Florida has no state income tax; revenue categories differ from income-tax states. Planned transformation: normalize FLAIR agency expenditures and DOR revenue by source. TODO: replace placeholder CSV with real Transparency Florida data."
+  },
+  "csv": "type,category,amount,description\nincome,Sales and Use Tax,1500000000,\"Florida sales and use tax revenue (placeholder)\"\nincome,Corporate Income Tax,200000000,\"Florida corporate income tax (placeholder)\"\nincome,Documentary Stamp Tax,250000000,\"Florida documentary stamp tax (placeholder)\"\nincome,Federal Transfers,800000000,\"Florida federal transfer receipts (placeholder)\"\nspending,Education,1000000000,\"Florida Dept. of Education spending (placeholder)\"\nspending,Health and Human Services,900000000,\"Florida AHCA and DCF spending (placeholder)\"\nspending,Transportation,400000000,\"Florida DOT spending (placeholder)\"\nspending,Law Enforcement,250000000,\"Florida law enforcement spending (placeholder)\"\nspending,General Government,200000000,\"Florida general government operations (placeholder)\""
+}

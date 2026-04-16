@@ -25,16 +25,16 @@ describe("DATASET_REGISTRY", () => {
     expect(DATASET_REGISTRY[0].isAvailable).toBe(true);
   });
 
-  it("treasury, ohio, and massachusetts are marked as available", () => {
-    const availableIds = ["treasury", "ohio", "massachusetts"];
+  it("treasury and massachusetts are marked as available", () => {
+    const availableIds = ["treasury", "massachusetts"];
     for (const id of availableIds) {
       const entry = DATASET_REGISTRY.find((d) => d.id === id);
       expect(entry?.isAvailable, `${id} should be isAvailable: true`).toBe(true);
     }
   });
 
-  it("washington, connecticut, and florida are marked as coming-soon (not yet available)", () => {
-    const comingSoonIds = ["washington", "connecticut", "florida"];
+  it("ohio, washington, connecticut, and florida are marked as coming-soon (not yet available)", () => {
+    const comingSoonIds = ["ohio", "washington", "connecticut", "florida"];
     for (const id of comingSoonIds) {
       const entry = DATASET_REGISTRY.find((d) => d.id === id);
       expect(entry?.isAvailable, `${id} should be isAvailable: false`).toBe(false);

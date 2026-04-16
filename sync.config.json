@@ -1,0 +1,11 @@
+{
+  "startDate": "2026-01-01",
+  "importers": [
+    "treasury",
+    "ohio",
+    "washington",
+    "massachusetts",
+    "connecticut",
+    "florida"
+  ]
+}

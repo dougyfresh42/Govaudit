@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "snapshotKey": "2026-03",
+    "datasetId": "washington",
+    "dataStatus": "stub",
+    "sourceName": "Washington State Fiscal Transparency",
+    "sourceUrl": "https://fiscal.wa.gov/",
+    "reportingPeriod": "March 2026",
+    "dataDate": "2026-03-31",
+    "importedAt": "2026-04-15T00:00:00.000Z",
+    "transformationNotes": "STUB: Washington state fiscal data ingestion not yet implemented. Target: March 2026 monthly snapshot (2026-03-31). Planned transformation: normalize AFRS agency expenditures and DOR revenue by source. TODO: replace placeholder CSV with real Washington fiscal data."
+  },
+  "csv": "type,category,amount,description\nincome,Sales Tax,1000000000,\"Washington sales tax revenue (placeholder)\"\nincome,Business and Occupation Tax,600000000,\"Washington B&O tax (placeholder)\"\nincome,Property Tax,300000000,\"Washington property tax (placeholder)\"\nincome,Federal Transfers,500000000,\"Washington federal transfer receipts (placeholder)\"\nspending,Education,900000000,\"Washington K-12 and higher education spending (placeholder)\"\nspending,Health and Human Services,700000000,\"Washington DSHS spending (placeholder)\"\nspending,Transportation,400000000,\"Washington WSDOT spending (placeholder)\"\nspending,Corrections,200000000,\"Washington DOC spending (placeholder)\"\nspending,General Government,150000000,\"Washington general government operations (placeholder)\""
+}

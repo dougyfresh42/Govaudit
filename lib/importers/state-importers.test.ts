@@ -47,7 +47,7 @@ describe("OhioImporter", () => {
   it("getMetadata returns correct March 2026 provenance", () => {
     const imp = new OhioImporter();
     const meta = imp.getMetadata("2026-03-31", IMPORTED_AT);
-    assertMarch2026Meta(meta, "ohio", "Ohio", "pulled");
+    assertMarch2026Meta(meta, "ohio", "Ohio", "stub");
   });
 
   it("getMetadata transformation notes do not contain STUB or TODO markers", () => {

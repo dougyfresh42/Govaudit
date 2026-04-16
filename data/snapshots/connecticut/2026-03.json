@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "snapshotKey": "2026-03",
+    "datasetId": "connecticut",
+    "dataStatus": "stub",
+    "sourceName": "Open Budget CT",
+    "sourceUrl": "https://openbudget.ct.gov/",
+    "reportingPeriod": "March 2026",
+    "dataDate": "2026-03-31",
+    "importedAt": "2026-04-15T00:00:00.000Z",
+    "transformationNotes": "STUB: Connecticut Open Budget data ingestion not yet implemented. Target: March 2026 monthly snapshot (2026-03-31). Planned transformation: normalize agency allotments/expenditures and revenue by fund. TODO: replace placeholder CSV with real Open Budget CT data."
+  },
+  "csv": "type,category,amount,description\nincome,Income Tax,700000000,\"Connecticut income tax revenue (placeholder)\"\nincome,Sales Tax,400000000,\"Connecticut sales tax (placeholder)\"\nincome,Corporation Tax,150000000,\"Connecticut corporation tax (placeholder)\"\nincome,Federal Transfers,350000000,\"Connecticut federal transfer receipts (placeholder)\"\nspending,Education,450000000,\"Connecticut Dept. of Education spending (placeholder)\"\nspending,Health and Human Services,600000000,\"Connecticut HHS spending (placeholder)\"\nspending,Transportation,200000000,\"Connecticut DOT spending (placeholder)\"\nspending,Corrections,150000000,\"Connecticut DOC spending (placeholder)\"\nspending,General Government,100000000,\"Connecticut general government operations (placeholder)\""
+}

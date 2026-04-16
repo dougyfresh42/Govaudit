@@ -7,6 +7,10 @@ on:
         description: "Next.js basePath for the deployment target (e.g. /Govaudit)"
         type: string
         required: true
+      branch-ref:
+        description: "Git ref to checkout (branch name or SHA). Defaults to the ref that triggered the workflow."
+        type: string
+        required: false
 
 jobs:
   build:
@@ -15,6 +19,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch-ref || github.ref }}
 
       - uses: actions/setup-node@v4
         with:
@@ -25,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: Sync budget data
-        run: npm run sync-budget
+        run: npm run sync-all
 
       - name: Build static site
         run: npm run build

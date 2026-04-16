@@ -135,18 +135,16 @@ async function main() {
     const importedAt = new Date().toISOString();
 
     // Resolve the data date that was actually fetched
-    const resolvedDate: string = (() => {
-      // TreasuryImporter exposes getResolvedDate(); fall back to today if missing
-      const imp = importer as unknown as { getResolvedDate?(): string | null };
-      return imp.getResolvedDate?.() ?? new Date().toISOString().slice(0, 10);
-    })();
+    const resolvedDate: string = importer.getResolvedDate?.() ?? new Date().toISOString().slice(0, 10);
 
     const meta = importer.getMetadata(resolvedDate, importedAt);
     const csvContent = parser.write(budgetItems);
     const newSnapshot: BudgetSnapshot = { meta, csv: csvContent };
 
     const existing = loadSnapshots();
-    const isDuplicate = existing.some((s) => s.meta.snapshotKey === meta.snapshotKey);
+    const isDuplicate = existing.some(
+      (s) => s.meta.snapshotKey === meta.snapshotKey && s.meta.datasetId === meta.datasetId
+    );
 
     if (isDuplicate) {
       console.log(`\nSnapshot ${meta.snapshotKey} already exists — skipping append.`);
