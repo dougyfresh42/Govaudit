@@ -135,11 +135,7 @@ async function main() {
     const importedAt = new Date().toISOString();
 
     // Resolve the data date that was actually fetched
-    const resolvedDate: string = (() => {
-      // TreasuryImporter exposes getResolvedDate(); fall back to today if missing
-      const imp = importer as unknown as { getResolvedDate?(): string | null };
-      return imp.getResolvedDate?.() ?? new Date().toISOString().slice(0, 10);
-    })();
+    const resolvedDate: string = importer.getResolvedDate?.() ?? new Date().toISOString().slice(0, 10);
 
     const meta = importer.getMetadata(resolvedDate, importedAt);
     const csvContent = parser.write(budgetItems);

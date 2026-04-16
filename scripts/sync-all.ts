@@ -201,8 +201,7 @@ async function main() {
         }
 
         const importedAt = new Date().toISOString();
-        const imp = importer as unknown as { getResolvedDate?(): string | null };
-        const resolvedDate = imp.getResolvedDate?.() ?? endDate;
+        const resolvedDate = importer.getResolvedDate?.() ?? endDate;
 
         const meta = importer.getMetadata(resolvedDate, importedAt);
         const csv = parser.write(budgetItems);

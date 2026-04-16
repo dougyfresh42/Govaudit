@@ -50,6 +50,8 @@ export interface Importer {
   transform(_data: unknown): BudgetItem[];
   /** Return provenance metadata for the most recent fetch. Call after fetch(). */
   getMetadata?(_resolvedDate: string, _importedAt: string): SnapshotMeta;
+  /** Return the data date resolved by the most recent fetch, or null if fetch has not been called. */
+  getResolvedDate?(): string | null;
 }
 
 export interface ImporterConfig {
