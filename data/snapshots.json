@@ -45,7 +45,7 @@
     "meta": {
       "snapshotKey": "2026-03",
       "datasetId": "ohio",
-      "dataStatus": "pulled",
+      "dataStatus": "stub",
       "sourceName": "Ohio Checkbook / Office of Budget and Management",
       "sourceUrl": "https://ohiocheckbook.ohio.gov/",
       "reportingPeriod": "March 2026",
