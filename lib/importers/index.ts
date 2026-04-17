@@ -1,4 +1,4 @@
-import { Importer, ImporterRegistry, ImporterConfig } from "./types";
+import type { Importer, ImporterConfig } from "./types";
 import { TreasuryImporter } from "./treasury";
 import { OhioImporter } from "./ohio";
 import { WashingtonImporter } from "./washington";
@@ -51,121 +51,78 @@ import { WestVirginiaImporter } from "./west-virginia";
 import { WisconsinImporter } from "./wisconsin";
 import { WyomingImporter } from "./wyoming";
 
-export function getImporter(name: string, config?: ImporterConfig): Importer {
-  const registry: ImporterRegistry = {};
-  registry["treasury"] = new TreasuryImporter(config);
-  registry["ohio"] = new OhioImporter(config);
-  registry["washington"] = new WashingtonImporter(config);
-  registry["massachusetts"] = new MassachusettsImporter(config);
-  registry["connecticut"] = new ConnecticutImporter(config);
-  registry["florida"] = new FloridaImporter(config);
-  registry["alabama"] = new AlabamaImporter(config);
-  registry["alaska"] = new AlaskaImporter(config);
-  registry["arizona"] = new ArizonaImporter(config);
-  registry["arkansas"] = new ArkansasImporter(config);
-  registry["california"] = new CaliforniaImporter(config);
-  registry["colorado"] = new ColoradoImporter(config);
-  registry["delaware"] = new DelawareImporter(config);
-  registry["georgia"] = new GeorgiaImporter(config);
-  registry["hawaii"] = new HawaiiImporter(config);
-  registry["idaho"] = new IdahoImporter(config);
-  registry["illinois"] = new IllinoisImporter(config);
-  registry["indiana"] = new IndianaImporter(config);
-  registry["iowa"] = new IowaImporter(config);
-  registry["kansas"] = new KansasImporter(config);
-  registry["kentucky"] = new KentuckyImporter(config);
-  registry["louisiana"] = new LouisianaImporter(config);
-  registry["maine"] = new MaineImporter(config);
-  registry["maryland"] = new MarylandImporter(config);
-  registry["michigan"] = new MichiganImporter(config);
-  registry["minnesota"] = new MinnesotaImporter(config);
-  registry["mississippi"] = new MississippiImporter(config);
-  registry["missouri"] = new MissouriImporter(config);
-  registry["montana"] = new MontanaImporter(config);
-  registry["nebraska"] = new NebraskaImporter(config);
-  registry["nevada"] = new NevadaImporter(config);
-  registry["new-hampshire"] = new NewHampshireImporter(config);
-  registry["new-jersey"] = new NewJerseyImporter(config);
-  registry["new-mexico"] = new NewMexicoImporter(config);
-  registry["new-york"] = new NewYorkImporter(config);
-  registry["north-carolina"] = new NorthCarolinaImporter(config);
-  registry["north-dakota"] = new NorthDakotaImporter(config);
-  registry["oklahoma"] = new OklahomaImporter(config);
-  registry["oregon"] = new OregonImporter(config);
-  registry["pennsylvania"] = new PennsylvaniaImporter(config);
-  registry["rhode-island"] = new RhodeIslandImporter(config);
-  registry["south-carolina"] = new SouthCarolinaImporter(config);
-  registry["south-dakota"] = new SouthDakotaImporter(config);
-  registry["tennessee"] = new TennesseeImporter(config);
-  registry["texas"] = new TexasImporter(config);
-  registry["utah"] = new UtahImporter(config);
-  registry["vermont"] = new VermontImporter(config);
-  registry["virginia"] = new VirginiaImporter(config);
-  registry["west-virginia"] = new WestVirginiaImporter(config);
-  registry["wisconsin"] = new WisconsinImporter(config);
-  registry["wyoming"] = new WyomingImporter(config);
+/**
+ * Factory constructors keyed by importer id. Each entry takes an optional
+ * ImporterConfig and returns a ready-to-use Importer instance.
+ */
+type ImporterFactory = (config?: ImporterConfig) => Importer;
 
-  const importer = registry[name];
-  if (!importer) {
-    throw new Error(`Unknown importer: ${name}. Available: ${Object.keys(registry).join(", ")}`);
+const IMPORTER_FACTORIES: Record<string, ImporterFactory> = {
+  treasury:          (c) => new TreasuryImporter(c),
+  ohio:              (c) => new OhioImporter(c),
+  washington:        (c) => new WashingtonImporter(c),
+  massachusetts:     (c) => new MassachusettsImporter(c),
+  connecticut:       (c) => new ConnecticutImporter(c),
+  florida:           (c) => new FloridaImporter(c),
+  alabama:           (c) => new AlabamaImporter(c),
+  alaska:            (c) => new AlaskaImporter(c),
+  arizona:           (c) => new ArizonaImporter(c),
+  arkansas:          (c) => new ArkansasImporter(c),
+  california:        (c) => new CaliforniaImporter(c),
+  colorado:          (c) => new ColoradoImporter(c),
+  delaware:          (c) => new DelawareImporter(c),
+  georgia:           (c) => new GeorgiaImporter(c),
+  hawaii:            (c) => new HawaiiImporter(c),
+  idaho:             (c) => new IdahoImporter(c),
+  illinois:          (c) => new IllinoisImporter(c),
+  indiana:           (c) => new IndianaImporter(c),
+  iowa:              (c) => new IowaImporter(c),
+  kansas:            (c) => new KansasImporter(c),
+  kentucky:          (c) => new KentuckyImporter(c),
+  louisiana:         (c) => new LouisianaImporter(c),
+  maine:             (c) => new MaineImporter(c),
+  maryland:          (c) => new MarylandImporter(c),
+  michigan:          (c) => new MichiganImporter(c),
+  minnesota:         (c) => new MinnesotaImporter(c),
+  mississippi:       (c) => new MississippiImporter(c),
+  missouri:          (c) => new MissouriImporter(c),
+  montana:           (c) => new MontanaImporter(c),
+  nebraska:          (c) => new NebraskaImporter(c),
+  nevada:            (c) => new NevadaImporter(c),
+  "new-hampshire":   (c) => new NewHampshireImporter(c),
+  "new-jersey":      (c) => new NewJerseyImporter(c),
+  "new-mexico":      (c) => new NewMexicoImporter(c),
+  "new-york":        (c) => new NewYorkImporter(c),
+  "north-carolina":  (c) => new NorthCarolinaImporter(c),
+  "north-dakota":    (c) => new NorthDakotaImporter(c),
+  oklahoma:          (c) => new OklahomaImporter(c),
+  oregon:            (c) => new OregonImporter(c),
+  pennsylvania:      (c) => new PennsylvaniaImporter(c),
+  "rhode-island":    (c) => new RhodeIslandImporter(c),
+  "south-carolina":  (c) => new SouthCarolinaImporter(c),
+  "south-dakota":    (c) => new SouthDakotaImporter(c),
+  tennessee:         (c) => new TennesseeImporter(c),
+  texas:             (c) => new TexasImporter(c),
+  utah:              (c) => new UtahImporter(c),
+  vermont:           (c) => new VermontImporter(c),
+  virginia:          (c) => new VirginiaImporter(c),
+  "west-virginia":   (c) => new WestVirginiaImporter(c),
+  wisconsin:         (c) => new WisconsinImporter(c),
+  wyoming:           (c) => new WyomingImporter(c),
+};
+
+export function getImporter(name: string, config?: ImporterConfig): Importer {
+  const factory = IMPORTER_FACTORIES[name];
+  if (!factory) {
+    throw new Error(
+      `Unknown importer: ${name}. Available: ${Object.keys(IMPORTER_FACTORIES).join(", ")}`
+    );
   }
-  return importer;
+  return factory(config);
 }
 
 export function listImporters(): Importer[] {
-  return [
-    new TreasuryImporter(),
-    new OhioImporter(),
-    new WashingtonImporter(),
-    new MassachusettsImporter(),
-    new ConnecticutImporter(),
-    new FloridaImporter(),
-    new AlabamaImporter(),
-    new AlaskaImporter(),
-    new ArizonaImporter(),
-    new ArkansasImporter(),
-    new CaliforniaImporter(),
-    new ColoradoImporter(),
-    new DelawareImporter(),
-    new GeorgiaImporter(),
-    new HawaiiImporter(),
-    new IdahoImporter(),
-    new IllinoisImporter(),
-    new IndianaImporter(),
-    new IowaImporter(),
-    new KansasImporter(),
-    new KentuckyImporter(),
-    new LouisianaImporter(),
-    new MaineImporter(),
-    new MarylandImporter(),
-    new MichiganImporter(),
-    new MinnesotaImporter(),
-    new MississippiImporter(),
-    new MissouriImporter(),
-    new MontanaImporter(),
-    new NebraskaImporter(),
-    new NevadaImporter(),
-    new NewHampshireImporter(),
-    new NewJerseyImporter(),
-    new NewMexicoImporter(),
-    new NewYorkImporter(),
-    new NorthCarolinaImporter(),
-    new NorthDakotaImporter(),
-    new OklahomaImporter(),
-    new OregonImporter(),
-    new PennsylvaniaImporter(),
-    new RhodeIslandImporter(),
-    new SouthCarolinaImporter(),
-    new SouthDakotaImporter(),
-    new TennesseeImporter(),
-    new TexasImporter(),
-    new UtahImporter(),
-    new VermontImporter(),
-    new VirginiaImporter(),
-    new WestVirginiaImporter(),
-    new WisconsinImporter(),
-    new WyomingImporter(),
-  ];
+  return Object.values(IMPORTER_FACTORIES).map((factory) => factory());
 }
 
 export type { ImporterConfig } from "./types";
