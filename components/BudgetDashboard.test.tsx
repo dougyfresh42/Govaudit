@@ -128,13 +128,13 @@ describe("BudgetDashboard — dataset selector", () => {
     expect(screen.getByLabelText("Dataset selector")).toBeTruthy();
   });
 
-  it("renders a select element with all six dataset options", () => {
+  it("renders a select element with all dataset options (treasury + 50 states)", () => {
     renderWithTheme(<BudgetDashboard snapshots={singleSnapshot} />);
     const select = screen.getByRole("combobox", { name: /data source/i });
     expect(select).toBeTruthy();
     const options = screen.getAllByRole("option");
-    // treasury + 5 states = 6 options
-    expect(options.length).toBe(6);
+    // treasury + 50 states = 51 options
+    expect(options.length).toBe(51);
   });
 
   it("defaults to the 'treasury' dataset", () => {

@@ -23,8 +23,8 @@ type Props = {
  * component and manages which snapshot is currently displayed.
  * Snapshots are expected newest-first; index 0 is the default current view.
  *
- * A dataset selector dropdown allows switching between supported data sources
- * (U.S. Federal, Ohio, Washington, Massachusetts, Connecticut, Florida).
+ * A dataset selector dropdown allows switching between all 51 supported data sources
+ * (U.S. Federal Treasury plus all 50 U.S. states).
  * The selected dataset filters the snapshot list; within each dataset the
  * existing reporting-period selector allows switching between historical months.
  */
