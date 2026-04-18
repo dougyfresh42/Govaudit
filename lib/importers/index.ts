@@ -55,7 +55,7 @@ import { WyomingImporter } from "./wyoming";
  * Factory constructors keyed by importer id. Each entry takes an optional
  * ImporterConfig and returns a ready-to-use Importer instance.
  */
-type ImporterFactory = (config?: ImporterConfig) => Importer;
+type ImporterFactory = (_config?: ImporterConfig) => Importer;
 
 const IMPORTER_FACTORIES: Record<string, ImporterFactory> = {
   treasury:          (c) => new TreasuryImporter(c),
